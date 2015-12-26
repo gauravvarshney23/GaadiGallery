@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.css">
+
+<style> 
+		#map-page, #map-canvas{ width: 100%; height: 100%; padding: 0; }
+</style>
+<script src="js/jquery-1.11.3.js"></script>
+<script src="js/jquery.mobile-1.4.5.js"></script>
+<script src="http://maps.google.com/maps/api/js?sensor=false"></script>
+<script>
+$( document ).on( "pageinit", "#map-page", function() {
+    var defaultLatLng = new google.maps.LatLng(34.0983425, -118.3267434);  // Default to Hollywood, CA when no geolocation support
+    if ( navigator.geolocation ) {
+        function success(pos) {
+            // Location found, show map with these coordinates
+            drawMap(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+        }
+        function fail(error) {
+            drawMap(defaultLatLng);  // Failed to find location, show default map
+        }
+        // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
+        navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000});
+    } else {
+        drawMap(defaultLatLng);  // No geolocation support, show default map
+    }
+    function drawMap(latlng) {
+        var myOptions = {
+            zoom: 14,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+        // Add an overlay to the map of current lat/lng
+        var marker = new google.maps.Marker({
+            position: latlng,
+            map: map,
+            title: "Greetings!"
+        });
+    }
+});
+
+</script>
+</head>
+<body>
+	
+<div data-role="page" id="map-page" data-url="map-page">
+	<div data-role="panel" id="myPanel1" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li>Home</li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">About Us</a></li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" data-theme="b">
+		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+    </div>
+    <div role="main" class="ui-content" id="map-canvas">
+		<!-- map loads here... -->
+    </div>
+	<div style="position: fixed; top: 120px; width: 94%; height: 160px; padding: 10px; border: 3px solid #73AD21; background-color: rgba(0,0,0,0.1)">
+		<b><label for="search" style="text-align:center; font-size: 1.3em; color: green;">DISCOVER BANGALORE CITY</label></b>
+		<input type="search" name="password" id="search" value="" placeholder="Search...">
+		<div align="center">
+			<a href="#list-category" id="category" class="ui-btn ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: green;">Show Category</a>
+		</div>
+	</div>
+</div>
+
+<div data-role="page" id="list-category" data-url="list-category">
+	<div data-role="panel" id="myPanel2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">About Us</a></li>
+			<li>Category</li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" data-theme="b">
+		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" class="ui-content" id="list-shop">
+		<form class="ui-filterable">
+			<input id="myFilter" data-type="search">
+		</form>
+		<ul data-role="listview" data-filter="true" data-input="#myFilter" data-inset="true">
+      <li>
+        <a href="#">
+        <img src="img/book.png">
+        <h2>Books Store</h2>
+        <p>Books store is the place where you can buy or sell a book</p>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+        <img src="img/mobile.jpg">
+        <h2>Mobile Store</h2>
+        <p>Mobile store is the place where you can buy a phone</p>
+        </a>
+      </li>
+	  <li>
+        <a href="#">
+        <img src="img/shoe.png">
+        <h2>Shoes Store</h2>
+        <p>Shoes store is the place where you can buy Shoes</p>
+        </a>
+      </li>
+	  <li>
+        <a href="#">
+        <img src="img/spec.png">
+        <h2>Optical Store</h2>
+        <p>Optical store is the place where you can buy Spec</p>
+        </a>
+      </li>
+    </ul>
+    </div>
+	
+</div>
+
+</body>
+</html>
