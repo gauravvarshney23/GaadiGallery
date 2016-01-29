@@ -49,6 +49,54 @@ $( document ).on( "pageinit", "#map-page", function() {
     }
 });
 
+$(document).on('pagebeforeshow', '#list-category', function(e, data){      
+    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+            //alert(result);
+			ajax.parseJSONP(result);
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });         
+});
+
+var listCat = {name : null, result : null};
+var ajax = {  
+    parseJSONP:function(result){
+		listCat.result = JSON.parse(result);
+		$('#list-categories').empty();
+        $.each( JSON.parse(result), function(i, row) {
+			if(row.count > 0) {
+				$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h2>' + row.name + '</h2><p>' + row.description+ '</p></a></li>');
+			}
+        });
+        $('#list-categories').listview('refresh');
+    }
+}
+
+$(document).on('vclick', '#list-categories li a', function(){  
+    listCat.name = $(this).attr('data-id');
+    $.mobile.changePage( "#category-shop", { transition: "slide", changeHash: false });
+});
+
+$(document).on('pagebeforeshow', '#category-shop', function(){      
+    $('#shopsList').empty();
+	$('#Cate').empty();
+    $.each(listCat.result, function(i, row) {
+        if(row.name == listCat.name) {
+			$('#Cate').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'</h3>');
+			$.each(row.shops, function(j, shoprow) {
+				//console.log(shoprow);
+				$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><img src="' + shoprow.featured_image + '"/><h2>' + shoprow.title + '</h2><p>' + shoprow.content + '</p></a></li>');
+			});
+			$('#shopsList').listview('refresh');
+        }
+    });
+});
+
 </script>
 </head>
 <body>
@@ -105,41 +153,14 @@ $( document ).on( "pageinit", "#map-page", function() {
 		<form class="ui-filterable">
 			<input id="myFilter" data-type="search" placeholder="Search a Category...">
 		</form>
-		<ul data-role="listview" data-filter="true" data-input="#myFilter" data-inset="true">
-		  <li>
-			<a href="#book-category">
-			<img src="img/book.png">
-			<h2>Books Store</h2>
-			<p>Books store is the place where you can buy or sell a book</p>
-			</a>
-		  </li>
-		  <li>
-			<a href="#">
-			<img src="img/mobile.jpg">
-			<h2>Mobile Store</h2>
-			<p>Mobile store is the place where you can buy a phone</p>
-			</a>
-		  </li>
-		  <li>
-			<a href="#">
-			<img src="img/shoe.png">
-			<h2>Shoes Store</h2>
-			<p>Shoes store is the place where you can buy Shoes</p>
-			</a>
-		  </li>
-		  <li>
-			<a href="#">
-			<img src="img/spec.png">
-			<h2>Optical Store</h2>
-			<p>Optical store is the place where you can buy Spec</p>
-			</a>
-		  </li>
+		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="true" >
+		  
 		</ul>
     </div>
 	
 </div>
 
-<div data-role="page" id="book-category" data-url="book-category">
+<div data-role="page" id="category-shop" data-url="category-shop">
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -192,28 +213,9 @@ $( document ).on( "pageinit", "#map-page", function() {
 		<form class="ui-filterable">
 			<input id="myFilter1" data-type="search" placeholder="Location...">
 		</form>
-		<ul data-role="listview" data-filter="true" data-input="#myFilter1" data-inset="true">
-		  <li>
-			<a href="#">
-			<img src="img/book.png">
-			<h2>Books Store 1</h2>
-			<p>Books store is the place where you can buy or sell a book</p>
-			</a>
-		  </li>
-		  <li>
-			<a href="#">
-			<img src="img/book.png">
-			<h2>Books Store 2</h2>
-			<p>Books store is the place where you can buy or sell a book</p>
-			</a>
-		  </li>
-		  <li>
-			<a href="#">
-			<img src="img/book.png">
-			<h2>Books Store 3</h2>
-			<p>Books store is the place where you can buy or sell a book</p>
-			</a>
-		  </li>
+		<p id="Cate"></p>
+		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="true">
+		  
 		</ul>
     </div>
 	
