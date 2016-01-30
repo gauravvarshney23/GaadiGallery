@@ -124,7 +124,9 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 			$('#Cate').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'</h3>');
 			$.each(row.shops, function(j, shoprow) {
 				//console.log(shoprow);
-				$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><img src="' + shoprow.featured_image + '"/><h2>' + shoprow.title + '</h2><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+				try{ 
+					$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><img src="' + shoprow.featured_image + '"/><h2>' + shoprow.title + '</h2><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+				}catch(e){}
 			});
 			$('#shopsList').listview('refresh');
         }
