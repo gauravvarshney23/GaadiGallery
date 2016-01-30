@@ -47,10 +47,7 @@ $( document ).on( "pageinit", "#map-page", function() {
             title: "Greetings!"
         });
     }
-});
-
-$(document).on('pageshow', '#map-page', function(e, data){      
-    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
+	$.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
         dataType: "jsonp",
         async: true,
         success: function (result) {
