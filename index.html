@@ -100,7 +100,8 @@ var ajax = {
 				$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h2>' + row.name + '</h2><p>' + row.description+ '</p></a></li>');
 			}
         });		
-        $('#list-categories').listview('refresh');
+        $('#loader').fadeOut();
+		$('#list-categories').listview('refresh');
     }
 }
 
@@ -188,6 +189,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		<form class="ui-filterable">
 			<input id="myFilter" data-type="search" placeholder="Search a Category...">
 		</form>
+		<img src="img/Preloader.gif" id="loader" style="margin:0px auto;display:block"></img>
 		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="true">
 		  
 		</ul>
