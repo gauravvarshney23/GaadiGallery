@@ -47,7 +47,10 @@ $( document ).on( "pageinit", "#map-page", function() {
             title: "Greetings!"
         });
     }
-	$.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
+});
+
+$(document).on('pagebeforeshow', '#list-category', function(e, data){      
+    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
         dataType: "jsonp",
         async: true,
         success: function (result) {
@@ -57,7 +60,10 @@ $( document ).on( "pageinit", "#map-page", function() {
             alert('Network error has occurred please try again!');
         }
     });
-	$.ajax({url: "http://gaadigallery.com/api/webservices/aboutus/",
+});
+
+$(document).on('pagebeforeshow', '#AboutUs', function(e, data){ 
+    $.ajax({url: "http://gaadigallery.com/api/webservices/aboutus/",
         dataType: "jsonp",
         async: true,
         success: function (result) {
@@ -68,6 +74,9 @@ $( document ).on( "pageinit", "#map-page", function() {
             alert('Network error has occurred please try again!');
         }
     });
+});
+
+$(document).on('pagebeforeshow', '#ContactUs', function(e, data){ 
 	$.ajax({url: "http://gaadigallery.com/api/webservices/contactus/",
         dataType: "jsonp",
         async: true,
