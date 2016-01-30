@@ -49,7 +49,7 @@ $( document ).on( "pageinit", "#map-page", function() {
     }
 });
 
-$(document).on('pagebeforeshow', '#map-page', function(e, data){      
+$(document).on('pageshow', '#map-page', function(e, data){      
     $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
         dataType: "jsonp",
         async: true,
