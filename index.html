@@ -68,7 +68,9 @@ $(document).on('pagebeforeshow', '#AboutUs', function(e, data){
         async: true,
         success: function (result) {
 			$('#about').empty();
-			$('#about').append(result);
+			$('#AboutLoader').fadeOut(0, function(){
+				$('#about').append(result);
+			});
         },
         error: function (request,error) {
             alert('Network error has occurred please try again!');
@@ -82,7 +84,9 @@ $(document).on('pagebeforeshow', '#ContactUs', function(e, data){
         async: true,
         success: function (result) {
 			$('#contact').empty();
-			$('#contact').append(result);
+			$('#ContactLoader').fadeOut(0, function(){
+				$('#contact').append(result);
+			});
         },
         error: function (request,error) {
             alert('Network error has occurred please try again!');
@@ -100,8 +104,9 @@ var ajax = {
 				$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h2>' + row.name + '</h2><p>' + row.description+ '</p></a></li>');
 			}
         });		
-        $('#loader').fadeOut();
-		$('#list-categories').listview('refresh');
+        $('#loader').fadeOut(0, function(){
+			$('#list-categories').listview('refresh');
+		});
     }
 }
 
@@ -257,7 +262,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
     </div>
 </div>
 
-<div data-role="page" id="AboutUs" data-url="AboutUs">
+<div data-role="page" style="background-color:white;" id="AboutUs" data-url="AboutUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -274,12 +279,13 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" class="ui-content" id="list-shop">
+		<img src="img/Preloader.gif" id="AboutLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="about"></h3>
     </div>
 	
 </div>
 
-<div data-role="page" id="ContactUs" data-url="ContactUs">
+<div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -296,6 +302,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" class="ui-content" id="list-shop">
+		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="contact"></h3>
     </div>
 	
