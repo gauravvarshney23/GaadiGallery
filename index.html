@@ -18,7 +18,7 @@
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script>
-var listCat = {name : null, result : null};
+var listCat = {id : null, name : null, result : null};
 $(document).on('pageshow', '#firstPage', function(e, data){
     $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
         dataType: "jsonp",
@@ -33,7 +33,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
     });
 });
 $(function() {
-  setTimeout(hideWelcome, 7000);
+  setTimeout(hideWelcome, 15000);
 });
 function hideWelcome() {
   $.mobile.changePage("#map-page", { transition: "slide", changeHash: false});
@@ -43,32 +43,28 @@ $(document).on('pagecreate', '#map-page', function() {
     if ( navigator.geolocation ) {
         function success(pos) {
             // Location found, show map with these coordinates
-			drawMap(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+			drawMap("map-canvas", new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
         }
         function fail(error) {
-            drawMap(defaultLatLng);  // Failed to find location, show default map
+            drawMap("map-canvas", defaultLatLng);  // Failed to find location, show default map
 			//console.log("I m in map error");
         }
         // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
         navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000});
     } else {
-        drawMap(defaultLatLng);  // No geolocation support, show default map
-    }
-    function drawMap(latlng) {
-        var myOptions = {
-            zoom: 14,
-            center: latlng,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-		var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
-        // Add an overlay to the map of current lat/lng
-        var marker = new google.maps.Marker({
-            position: latlng,
-            map: map,
-            title: "Greetings!"
-        });
+        drawMap("map-canvas", defaultLatLng);  // No geolocation support, show default map
     }
 });
+function drawMap(displayID, latlng) {
+	var myOptions = {zoom: 14, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP};
+	var map = new google.maps.Map(document.getElementById(displayID), myOptions);
+	// Add an overlay to the map of current lat/lng
+	var marker = new google.maps.Marker({
+		position: latlng,
+		map: map,
+		title: "I am here !"
+	});
+}
 
 $(document).on('pagebeforeshow', '#AboutUs', function(e, data){ 
     $.ajax({url: "http://gaadigallery.com/api/webservices/aboutus/",
@@ -144,13 +140,44 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
         }
     });
 });
+
+$(document).on('vclick', '#shopsList li a', function(){  
+    listCat.id = $(this).attr('data-id');
+    $.mobile.changePage("#shop", { transition: "slide", changeHash: false});
+});
+
+$(document).on('pagebeforeshow', '#shop', function(){      
+    $('#shopDesc').empty();
+	$('#CateShop').empty();
+    $.each(listCat.result, function(i, row) {
+		
+		var elem = document.createElement('textarea');
+		elem.innerHTML = row.name;
+		var decoded1 = elem.value;
+		elem.innerHTML = listCat.name;
+		var decoded2 = elem.value;
+		
+        if(decoded1 == decoded2) {
+			
+			$.each(row.shops, function(j, shoprow) {
+				if(shoprow.id == listCat.id){
+					$('#CateShop').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'<br/>SHOP: ' + shoprow.title + '</h3>');
+					try{ 
+						$('#shopDesc').append('<img style="width:300px; height:250px" src="' + shoprow.featured_image + '"/><h4>' + shoprow.content + '</h4><p>Contact No. : ' + shoprow.additional_information.telephone + '</p>');
+						drawMap("displayMap", new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude));
+					}catch(e){}
+				}
+			});
+        }
+    });
+});
 </script>
 </head>
 <body>
 <div data-role="page" id="firstPage" style="background-color:white;" data-url="firstPage">
-    <div role="main" class="ui-content" id="firstPageBody">
-		<img src="GaadiGallery.png" id="logo" style="margin:20px auto;display:block;"></img><br>
-		<div style="text-align:center; color: #29b0e2; margin:0px auto;display:block;"><h3>We are moving towards one solution...</h3></div>
+    <div role="main" class="ui-content" id="firstPageBody" style="background-color:white;">
+		<img src="GaadiGallery.png" id="logo" style="margin:0px auto;display:block; width:200px; height:200px"></img>
+		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><h4>We are moving towards one solution !</h4></div>
 		<img src="img/Preloader.gif" id="loader0" style="margin:0px auto;display:block;"></img>
     </div>
 </div>	
@@ -273,7 +300,28 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		</ul>
     </div>
 </div>
-
+<div data-role="page" style="background-color:white;" id="shop" data-url="shop">
+	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">About Us</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" style="background-color:white;" class="ui-content">
+		<p id="CateShop"></p>
+		<div id="shopDesc"></div>
+		<div style="width:340px; height:300px" id="displayMap"></div>
+    </div>
+</div>
 <div data-role="page" style="background-color:white;" id="AboutUs" data-url="AboutUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
