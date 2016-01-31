@@ -18,15 +18,32 @@
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="http://maps.google.com/maps/api/js?sensor=false"></script>
 <script>
-$( document ).on( "pageinit", "#map-page", function() {
-    var defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
+var listCat = {name : null, result : null};
+$(document).on('pagebeforeshow', '#firstPage', function(e, data){
+    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+			listCat.result = JSON.parse(result);
+			$.mobile.changePage("#map-page", { transition: "slide", changeHash: false});
+			//ajax.parseJSONP(result);
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });
+});
+
+$(document).on('pagecreate', '#map-page', function() {
+	var defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
     if ( navigator.geolocation ) {
         function success(pos) {
             // Location found, show map with these coordinates
-            drawMap(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
+			drawMap(new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude));
         }
         function fail(error) {
             drawMap(defaultLatLng);  // Failed to find location, show default map
+			//console.log("I m in map error");
         }
         // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
         navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000});
@@ -39,7 +56,7 @@ $( document ).on( "pageinit", "#map-page", function() {
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+		var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
         // Add an overlay to the map of current lat/lng
         var marker = new google.maps.Marker({
             position: latlng,
@@ -47,19 +64,6 @@ $( document ).on( "pageinit", "#map-page", function() {
             title: "Greetings!"
         });
     }
-});
-
-$(document).on('pagebeforeshow', '#list-category', function(e, data){      
-    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
-        dataType: "jsonp",
-        async: true,
-        success: function (result) {
-			ajax.parseJSONP(result);
-        },
-        error: function (request,error) {
-            alert('Network error has occurred please try again!');
-        }
-    });
 });
 
 $(document).on('pagebeforeshow', '#AboutUs', function(e, data){ 
@@ -94,25 +98,23 @@ $(document).on('pagebeforeshow', '#ContactUs', function(e, data){
     });
 });
 
-var listCat = {name : null, result : null};
-var ajax = {  
-    parseJSONP:function(result){
-		listCat.result = JSON.parse(result);
-		$('#list-categories').empty();
-        $.each( JSON.parse(result), function(i, row) {
-			if(row.count > 0) {
-				$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h2>' + row.name + '</h2><p>' + row.description+ '</p></a></li>');
-			}
-        });		
-        $('#loader').fadeOut(0, function(){
-			$('#list-categories').listview('refresh');
-		});
-    }
-}
+
+$(document).on('pagebeforeshow', '#list-category', function(e, data){		
+	$('#list-categories').empty();
+	$.each(listCat.result, function(i, row) {
+		if(row.count > 0) {
+			$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h2>' + row.name + '</h2><p>' + row.description+ '</p></a></li>');
+		}
+	});		
+	$('#loader').fadeOut(0, function(){
+		$('#list-categories').listview('refresh');
+	});
+});
+
 
 $(document).on('vclick', '#list-categories li a', function(){  
     listCat.name = $(this).attr('data-id');
-    $.mobile.changePage( "#category-shop", { transition: "slide", changeHash: false });
+    $.mobile.changePage("#category-shop", { transition: "slide", changeHash: false});
 });
 
 $(document).on('pagebeforeshow', '#category-shop', function(){      
@@ -141,7 +143,13 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 </script>
 </head>
 <body>
-	
+<div data-role="page" id="firstPage" style="background-color:white;" data-url="firstPage">
+    <div role="main" class="ui-content" id="firstPageBody">
+		<img src="GaadiGallery.png" id="logo" style="margin:20px auto;display:block;"></img><br>
+		<div style="text-align:center; color: #29b0e2; margin:0px auto;display:block;"><h3>We are moving towards one solution...</h3></div>
+		<img src="img/Preloader.gif" id="loader0" style="margin:0px auto;display:block;"></img>
+    </div>
+</div>	
 <div data-role="page" id="map-page" data-url="map-page" style="overflow-y:hidden;">
 	<div data-role="panel" id="myPanel1" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -185,7 +193,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 			<li><a href="#">App Map</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b">
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -213,7 +221,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 			<li><a href="#">App Map</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b">
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -273,7 +281,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 			<li><a href="#">App Map</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b">
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -296,7 +304,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 			<li><a href="#">App Map</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b">
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
