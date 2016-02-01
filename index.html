@@ -33,7 +33,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
     });
 });
 $(function() {
-  setTimeout(hideWelcome, 15000);
+  setTimeout(hideWelcome, 20000);
 });
 function hideWelcome() {
   $.mobile.changePage("#map-page", { transition: "slide", changeHash: false});
@@ -55,9 +55,10 @@ $(document).on('pagecreate', '#map-page', function() {
         drawMap("map-canvas", defaultLatLng);  // No geolocation support, show default map
     }
 });
+var map = null;
 function drawMap(displayID, latlng) {
 	var myOptions = {zoom: 14, center: latlng, mapTypeId: google.maps.MapTypeId.ROADMAP};
-	var map = new google.maps.Map(document.getElementById(displayID), myOptions);
+	map = new google.maps.Map(document.getElementById(displayID), myOptions);
 	// Add an overlay to the map of current lat/lng
 	var marker = new google.maps.Marker({
 		position: latlng,
@@ -143,10 +144,10 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 
 $(document).on('vclick', '#shopsList li a', function(){  
     listCat.id = $(this).attr('data-id');
-    $.mobile.changePage("#shop", { transition: "slide", changeHash: false});
+    $.mobile.changePage("#shop", {transition: "slide", changeHash: false});
 });
 
-$(document).on('pagebeforeshow', '#shop', function(){      
+$(document).on('pageshow', '#shop', function(){      
     $('#shopDesc').empty();
 	$('#CateShop').empty();
     $.each(listCat.result, function(i, row) {
@@ -163,8 +164,9 @@ $(document).on('pagebeforeshow', '#shop', function(){
 				if(shoprow.id == listCat.id){
 					$('#CateShop').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'<br/>SHOP: ' + shoprow.title + '</h3>');
 					try{ 
-						$('#shopDesc').append('<img style="width:300px; height:250px" src="' + shoprow.featured_image + '"/><h4>' + shoprow.content + '</h4><p>Contact No. : ' + shoprow.additional_information.telephone + '</p>');
+						$('#shopDesc').append('<img style="width:350px; height:250px" src="' + shoprow.featured_image + '"/><h4>' + shoprow.content + '</h4><h4>Contact No. : ' + shoprow.additional_information.telephone + '</h4>');
 						drawMap("displayMap", new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude));
+						google.maps.event.trigger(map, 'resize');
 					}catch(e){}
 				}
 			});
@@ -176,8 +178,8 @@ $(document).on('pagebeforeshow', '#shop', function(){
 <body>
 <div data-role="page" id="firstPage" style="background-color:white;" data-url="firstPage">
     <div role="main" class="ui-content" id="firstPageBody" style="background-color:white;">
-		<img src="GaadiGallery.png" id="logo" style="margin:0px auto;display:block; width:200px; height:200px"></img>
-		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><h4>We are moving towards one solution !</h4></div>
+		<img src="GaadiGallery.png" id="logo" style="margin:50px auto;display:block; width:320px; height:320px;"></img>
+		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><h3>We are moving towards one solution !</h3></div>
 		<img src="img/Preloader.gif" id="loader0" style="margin:0px auto;display:block;"></img>
     </div>
 </div>	
@@ -319,7 +321,7 @@ $(document).on('pagebeforeshow', '#shop', function(){
     <div role="main" style="background-color:white;" class="ui-content">
 		<p id="CateShop"></p>
 		<div id="shopDesc"></div>
-		<div style="width:340px; height:300px" id="displayMap"></div>
+		<div style="width:320px; height:320px" class="ui-content" id="displayMap"></div>
     </div>
 </div>
 <div data-role="page" style="background-color:white;" id="AboutUs" data-url="AboutUs">
