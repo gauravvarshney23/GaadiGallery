@@ -75,7 +75,7 @@ $(document).on('pageshow', '#map-page', function() {
 			$.each(row.shops, function(j, shoprow) {
 				//if(row.name == "Computer Shop")
 				try{
-					var msgDisplay = "Category: " + row.name + " || Shop: " + shoprow.title;
+					var msgDisplay = "Category:- " + row.name + " || Shop:- " + shoprow.title;
 					var loc1 = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var marker2 = new google.maps.Marker({
 						position: loc1,
@@ -83,6 +83,13 @@ $(document).on('pageshow', '#map-page', function() {
 						map: map,
 						title: msgDisplay
 					});
+					var infowindow = new google.maps.InfoWindow({
+					  content:msgDisplay
+					  });
+
+					google.maps.event.addListener(marker2, 'click', function() {
+					  infowindow.open(map,marker2);
+					  });
 				}catch(e){}
 			});
 		});
@@ -227,15 +234,22 @@ $(document).on('pageshow', '#shop', function(){
 								zoom: 14,
 								center: loc,
 								mapTypeId: google.maps.MapTypeId.ROADMAP
-							};
-							var map1 = new google.maps.Map(document.getElementById("displayMap"), myOptions1);
-							// Add an overlay to the map of current lat/lng
-							var marker1 = new google.maps.Marker({
-								position: loc,
-								icon:'img/shopMark.png',
-								map: map1,
-								title: "Greetings!"
-							});
+						};
+						var map1 = new google.maps.Map(document.getElementById("displayMap"), myOptions1);
+						// Add an overlay to the map of current lat/lng
+						var marker1 = new google.maps.Marker({
+							position: loc,
+							icon:'img/shopMark.png',
+							map: map1,
+							title: "Greetings!"
+						});
+						var infowindow = new google.maps.InfoWindow({
+						  content:shoprow.title
+						  });
+
+						google.maps.event.addListener(marker1, 'click', function() {
+						  infowindow.open(map1,marker1);
+						  });
 						google.maps.event.trigger(map1, 'resize');
 					}catch(e){}
 					
