@@ -4,7 +4,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
 <style> 
-	#map-page, #map-canvas{ width: 100%; height: 100%; padding: 0; }
+#map-page, #map-canvas{ width: 100%; height: 100%; padding: 0; }
+
+.ui-body-f {
+font-weight: bold;
+padding: 0;
+background-color: white;
+}
+.tr-head {
+    border-bottom: 1px solid white;
+    background: #29b0e2;
+    color: white;
+}
+.tr-content {
+    border-bottom: 1px solid #29b0e2;
+    background: white;
+    color: #29b0e2;
+}
 </style>
 <script src="js/jquery-1.11.3.min.js"></script>
 <script>
@@ -35,6 +51,25 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         }
     });
 });
+//handle Back button
+function onDeviceReady() {
+    // Register the event listener
+    document.addEventListener("backbutton", onBackKeyDown, false);
+    console.log('Device ready - register onBackKeyDown()');                
+}
+document.addEventListener("deviceready", onDeviceReady, false);
+function onBackKeyDown() {
+    var active_page = $( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" );
+    var id =active_page.page().attr('id');
+    if (id==='map-page') {
+        if (confirm('Do you want to exit the app? If not, use the top left button to go to Previous Page?')==true){
+            navigator.app.exitApp();
+        }
+    }
+    else{
+    navigator.app.backHistory();
+    }
+}
 $(function() {
   setTimeout(hideWelcome, 20000);
 });
@@ -224,12 +259,17 @@ $(document).on('pageshow', '#shop', function(){
 			
 			$.each(row.shops, function(j, shoprow) {
 				if(shoprow.id == listCat.id){
-					$('#CateShop').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'<br/>SHOP: ' + shoprow.title + '</h3>');
+					$('#catName').html(row.name);
+					$('#shopName').html(shoprow.title);
 					try{ 
 						var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 						var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 						distance = distance.toFixed(2);	
-						$('#shopDesc').append('<img style="width:310px; height:260px" src="' + shoprow.featured_image + '"/><h4>' + shoprow.content + '</h4><h4>Distance from your location (in km): ' + distance + '</h4><h4>Contact No. : ' + shoprow.additional_information.telephone + '</h4><h4>Email id : ' + shoprow.additional_information.email + '</h4>');
+						$('#shopImage').html('<img style="margin:0px auto;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/>');
+						$('#shopAddress').html(shoprow.content);
+						$('#shopDistance').html(distance);
+						$('#shopContact').html(shoprow.additional_information.telephone);
+						$('#shopEmail').html(shoprow.additional_information.email);
 						var myOptions1 = {
 								zoom: 14,
 								center: loc,
@@ -261,10 +301,10 @@ $(document).on('pageshow', '#shop', function(){
 </script>
 </head>
 <body>
-<div data-role="page" id="firstPage" style="background-color:white;" data-url="firstPage">
-    <div role="main" class="ui-content" id="firstPageBody" style="background-color:white;">
-		<img src="GaadiGallery.png" id="logo" style="margin:50px auto;display:block; width:320px; height:320px;"></img>
-		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><H2>DISCOVER BANGALORE CITY</h2><h3>(We are moving towards one solution..!)</h3></div>
+<div data-role="page" id="firstPage" style='background-color:white;' data-url="firstPage">
+    <div role="main" id="firstPageBody" style="position: relative; top: 100px; background-color:white;">
+		<img src="GaadiGallery.png" id="logo" style="margin:20px auto;display:block;"></img>
+		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><H3>DISCOVER BANGALORE CITY</h3><h4>(We are moving towards one solution..!)</h4></div>
 		<img src="img/Preloader.gif" id="loader0" style="margin:0px auto;display:block;"></img>
     </div>
 </div>	
@@ -286,11 +326,11 @@ $(document).on('pageshow', '#shop', function(){
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
     </div>
-	<a href="#list-category" id="category" class="ui-btn ui-btn-b ui-icon-grid ui-btn-icon-left" data-transition="slide" style="text-align: center; position: fixed; bottom: 5%; left: 10%; color: #29b0e2;">Show Category</a>
+	<div style="text-align: center; position: relative; bottom: 18%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
 </div>
 
-<div style="background-color:white;" data-role="page" id="list-category" data-url="list-category">
-	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+<div data-role="page" id="list-category" data-url="list-category">
+	<div data-theme="a" data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
 			<li><a href="#map-page">Home</a></li>
@@ -305,19 +345,19 @@ $(document).on('pageshow', '#shop', function(){
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
-    <div role="main" style="background-color:white;" class="ui-content" id="list-shop">
+    <div role="main" id="list-shop">
 		<form class="ui-filterable">
 			<input id="myFilter" data-type="search" placeholder="Search a Category...">
 		</form>
 		<img src="img/Preloader.gif" id="loader" style="margin:20px auto;display:block;"></img>
-		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="true">
+		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="false">
 		  
 		</ul>
     </div>
 	
 </div>
 
-<div data-role="page" style="background-color:white;" id="category-shop" data-url="category-shop">
+<div data-role="page" id="category-shop" data-url="category-shop">
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -333,7 +373,7 @@ $(document).on('pageshow', '#shop', function(){
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
-    <div role="main" style="background-color:white;" class="ui-content" id="book-shop">
+    <div role="main" id="book-shop">
 		<div>
 			<a href="#AdvancedFilter" id="af" data-rel="popup" class="ui-btn ui-icon-bullets ui-btn-icon-left" data-position-to="#af">Advanced filter</a>
 		</div>
@@ -342,7 +382,7 @@ $(document).on('pageshow', '#shop', function(){
 			<div>
 			  <h3>Advanced Filter</h3>
 				<label for="points">Distance (in km):</label>
-				<input type="range" name="points" id="points" value="15" min="1" max="30" data-highlight="true" data-show-value="true">
+				<input type="range" name="points" id="points" value="30" min="1" max="30" data-highlight="true" data-show-value="true">
 				<input type="button" data-inline="true" id="filterSearch" value="Search">
 			</div>
 		</div>
@@ -350,12 +390,12 @@ $(document).on('pageshow', '#shop', function(){
 			<input id="myFilter1" data-type="search" placeholder="Location...">
 		</form>
 		<p id="Cate"></p>
-		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="true">
+		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="false">
 		  
 		</ul>
     </div>
 </div>
-<div data-role="page" style="background-color:white;" id="shop" data-url="shop">
+<div data-role="page" id="shop" data-url="shop">
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -371,13 +411,40 @@ $(document).on('pageshow', '#shop', function(){
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
-    <div role="main" style="background-color:white;" class="ui-content">
-		<p id="CateShop"></p>
-		<div id="shopDesc"></div>
-		<div style="width:300px; height:300px" class="ui-content" id="displayMap"></div>
+    <div role="main" class="ui-content">
+		<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">
+			<tr>
+			  <td class="tr-head">Category</td>
+			  <td id="catName" class="tr-content">Category Name</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Shop</td>
+			  <td id="shopName" class="tr-content">Shop Name</td>
+			</tr>
+			<tr>
+			  <td colspan="2"><div id="shopImage"></div></td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Address</td>
+			  <td id="shopAddress" class="tr-content">Shop Address</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Distance from your location (in km)</td>
+			  <td id="shopDistance" class="tr-content">Shop Distance</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Contact No.</td>
+			  <td id="shopContact" class="tr-content">Shop Contact no.</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Email id</td>
+			  <td id="shopEmail" class="tr-content">Shop Email id</td>
+			</tr>
+		</table>
+		<div style="height:350px" id="displayMap"></div>
     </div>
 </div>
-<div data-role="page" style="background-color:white;" id="AboutUs" data-url="AboutUs">
+<div data-role="page" id="AboutUs" data-url="AboutUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -400,7 +467,7 @@ $(document).on('pageshow', '#shop', function(){
 	
 </div>
 
-<div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
+<div data-role="page" id="ContactUs" data-url="ContactUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
