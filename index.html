@@ -33,6 +33,7 @@ background-color: white;
 </script>
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
+<script src="js/jssor.slider.min.js"></script>
 <script>
 var listCat = {id : null, name : null, result : null};
 //var marker = null;
@@ -44,6 +45,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
+			setTimeout(hideWelcome, 20000);
 			//ajax.parseJSONP(result);
         },
         error: function (request,error) {
@@ -253,8 +255,8 @@ $(document).on('vclick', '#shopsList li a', function(){
 });
 
 $(document).on('pageshow', '#shop', function(){      
-    $('#shopDesc').empty();
-	$('#CateShop').empty();
+    $('#shopImage').empty();
+	$('#shopAddress').empty();
     $.each(listCat.result, function(i, row) {
 		
 		var elem = document.createElement('textarea');
@@ -354,6 +356,138 @@ $(document).on('pageshow', '#shop', function(){
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="list-shop">
+		<script>
+        jssor_1_slider_init = function() {
+            
+            var jssor_1_SlideshowTransitions = [
+              {$Duration:1200,$Opacity:2}
+            ];
+            
+            var jssor_1_options = {
+              $AutoPlay: true,
+              $SlideshowOptions: {
+                $Class: $JssorSlideshowRunner$,
+                $Transitions: jssor_1_SlideshowTransitions,
+                $TransitionsOrder: 1
+              },
+              $ArrowNavigatorOptions: {
+                $Class: $JssorArrowNavigator$
+              },
+              $BulletNavigatorOptions: {
+                $Class: $JssorBulletNavigator$
+              }
+            };
+            
+            var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
+            
+            //responsive code begin
+            //you can remove responsive code if you don't want the slider scales while window resizing
+            function ScaleSlider() {
+                var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
+                if (refSize) {
+                    refSize = Math.min(refSize, 600);
+                    jssor_1_slider.$ScaleWidth(refSize);
+                }
+                else {
+                    window.setTimeout(ScaleSlider, 30);
+                }
+            }
+            ScaleSlider();
+            $Jssor$.$AddEvent(window, "load", ScaleSlider);
+            $Jssor$.$AddEvent(window, "resize", ScaleSlider);
+            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+            //responsive code end
+        };
+    </script>
+
+    <style>
+        
+        /* jssor slider bullet navigator skin 05 css */
+        /*
+        .jssorb05 div           (normal)
+        .jssorb05 div:hover     (normal mouseover)
+        .jssorb05 .av           (active)
+        .jssorb05 .av:hover     (active mouseover)
+        .jssorb05 .dn           (mousedown)
+        */
+        .jssorb05 {
+            position: absolute;
+        }
+        .jssorb05 div, .jssorb05 div:hover, .jssorb05 .av {
+            position: absolute;
+            /* size of bullet elment */
+            width: 16px;
+            height: 16px;
+            background: url('img/b05.png') no-repeat;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .jssorb05 div { background-position: -7px -7px; }
+        .jssorb05 div:hover, .jssorb05 .av:hover { background-position: -37px -7px; }
+        .jssorb05 .av { background-position: -67px -7px; }
+        .jssorb05 .dn, .jssorb05 .dn:hover { background-position: -97px -7px; }
+
+        /* jssor slider arrow navigator skin 12 css */
+        /*
+        .jssora12l                  (normal)
+        .jssora12r                  (normal)
+        .jssora12l:hover            (normal mouseover)
+        .jssora12r:hover            (normal mouseover)
+        .jssora12l.jssora12ldn      (mousedown)
+        .jssora12r.jssora12rdn      (mousedown)
+        */
+        .jssora12l, .jssora12r {
+            display: block;
+            position: absolute;
+            /* size of arrow element */
+            width: 30px;
+            height: 46px;
+            cursor: pointer;
+            background: url('img/a12.png') no-repeat;
+            overflow: hidden;
+        }
+        .jssora12l { background-position: -16px -37px; }
+        .jssora12r { background-position: -75px -37px; }
+        .jssora12l:hover { background-position: -136px -37px; }
+        .jssora12r:hover { background-position: -195px -37px; }
+        .jssora12l.jssora12ldn { background-position: -256px -37px; }
+        .jssora12r.jssora12rdn { background-position: -315px -37px; }
+    </style>
+
+
+    <div id="jssor_1" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
+        <!-- Loading Screen -->
+        <div data-u="loading" style="position: absolute; top: 0px; left: 0px;">
+            <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block; top: 0px; left: 0px; width: 100%; height: 100%;"></div>
+            <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
+        </div>
+        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/02.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/04.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/05.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/09.jpg" />
+            </div>
+        </div>
+        <!-- Bullet Navigator -->
+        <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
+            <!-- bullet navigator item prototype -->
+            <div data-u="prototype" style="width:16px;height:16px;"></div>
+        </div>
+        <!-- Arrow Navigator -->
+        <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <a href="http://www.jssor.com" style="display:none">Slideshow Maker</a>
+    </div>
+    <script>
+        jssor_1_slider_init();
+    </script>
 		<form class="ui-filterable">
 			<input id="myFilter" data-type="search" placeholder="Search a Category...">
 		</form>
@@ -437,10 +571,6 @@ $(document).on('pageshow', '#shop', function(){
 			  <td id="shopAddress" class="tr-content">Shop Address</td>
 			</tr>
 			<tr>
-			  <td class="tr-head">Distance from your location (in km)</td>
-			  <td id="shopDistance" class="tr-content">Shop Distance</td>
-			</tr>
-			<tr>
 			  <td class="tr-head">Contact No.</td>
 			  <td id="shopContact" class="tr-content">Shop Contact no.</td>
 			</tr>
@@ -448,11 +578,15 @@ $(document).on('pageshow', '#shop', function(){
 			  <td class="tr-head">Email id</td>
 			  <td id="shopEmail" class="tr-content">Shop Email id</td>
 			</tr>
+			<tr>
+			  <td class="tr-head">Far Away (in km)</td>
+			  <td id="shopDistance" class="tr-content">Shop Distance</td>
+			</tr>
 		</table>
 		<div style="height:350px" id="displayMap"></div>
     </div>
 </div>
-<div data-role="page" id="AboutUs" data-url="AboutUs">
+<div data-role="page" id="AboutUs" style="background-color:white;" data-url="AboutUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -468,14 +602,14 @@ $(document).on('pageshow', '#shop', function(){
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
-    <div role="main" class="ui-content" id="list-shop">
+    <div role="main" style="background-color:white;" class="ui-content" id="about-us">
 		<img src="img/Preloader.gif" id="AboutLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="about"></h3>
     </div>
 	
 </div>
 
-<div data-role="page" id="ContactUs" data-url="ContactUs">
+<div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
@@ -491,7 +625,7 @@ $(document).on('pageshow', '#shop', function(){
 		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
-    <div role="main" class="ui-content" id="list-shop">
+    <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
 		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="contact"></h3>
     </div>
