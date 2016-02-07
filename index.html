@@ -67,13 +67,13 @@ $(document).on('pageshow', '#firstPage', function(e, data){
     function onBackKeyDown() {
 	var active_page = $( ":mobile-pagecontainer" ).pagecontainer( "getActivePage" );
     var id = active_page.page().attr('id');
-    if (id =='map-page') {
+    if (id === 'map-page') {
         if (confirm('Do you want to exit the app? If not, use the top left button to go to Previous Page?')==true){
             navigator.app.exitApp();
         }
     }
     else{
-	history.go(-1);
+	alert("hi");
     navigator.app.backHistory();
     }
     }
@@ -308,7 +308,7 @@ $(document).on('pageshow', '#shop', function(){
 });
 </script>
 </head>
-<body>
+<body onload="onLoad()">
 <div data-role="page" id="firstPage" style='background-color:white;' data-url="firstPage">
     <div role="main" id="firstPageBody" style="position: relative; top: 100px; background-color:white;">
 		<img src="GaadiGallery.png" id="logo" style="margin:20px auto;display:block;"></img>
