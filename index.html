@@ -25,7 +25,7 @@ background-color: white;
 <script src="js/jquery-1.11.3.min.js"></script>
 <script>
     $(document).bind('mobileinit',function(){
-        $.mobile.changePage.defaults.changeHash = false;
+        $.mobile.changePage.defaults.changeHash = true;
         $.mobile.hashListeningEnabled = false;
         $.mobile.pushStateEnabled = false;
 		$.mobile.allowCrossDomainPages = true;
@@ -55,7 +55,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
 function onDeviceReady() {
     // Register the event listener
     document.addEventListener("backbutton", onBackKeyDown, false);
-    console.log('Device ready - register onBackKeyDown()');                
+    alert('Device ready - register onBackKeyDown()');                
 }
 document.addEventListener("deviceready", onDeviceReady, false);
 function onBackKeyDown() {
