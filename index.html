@@ -82,7 +82,7 @@ $(function() {
   setTimeout(hideWelcome, 20000);
 });
 function hideWelcome() {
-  $.mobile.changePage("#map-page", { transition: "slide", changeHash: false});
+  $.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
 }
 
 $(document).on('pageshow', '#map-page', function() {
@@ -187,7 +187,7 @@ $(document).on('pagebeforeshow', '#list-category', function(e, data){
 
 $(document).on('vclick', '#list-categories li a', function(){  
     listCat.name = $(this).attr('data-id');
-    $.mobile.changePage("#category-shop", { transition: "slide", changeHash: false});
+    $.mobile.changePage("#category-shop", { transition: "slide", changeHash: true});
 });
 
 $(document).on('vclick', '#filterSearch', function(){  
@@ -216,7 +216,7 @@ $(document).on('vclick', '#filterSearch', function(){
 			$('#shopsList').listview('refresh');
         }
     });
-	$.mobile.changePage("#category-shop", { transition: "slide", changeHash: false});
+	$.mobile.changePage("#category-shop", { transition: "slide", changeHash: true});
 });
 $(document).on('pagebeforeshow', '#category-shop', function(){      
     $('#shopsList').empty();
@@ -249,7 +249,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 
 $(document).on('vclick', '#shopsList li a', function(){  
     listCat.id = $(this).attr('data-id');
-    $.mobile.changePage("#shop", {transition: "slide", changeHash: false});
+    $.mobile.changePage("#shop", {transition: "slide", changeHash: true});
 });
 
 $(document).on('pageshow', '#shop', function(){      
