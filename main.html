@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
+<style> 
+#map-page, #map-canvas{ width: 100%; height: 100%; padding: 0; }
+
+.ui-body-f {
+font-weight: bold;
+padding: 0;
+background-color: white;
+}
+.tr-head {
+    border-bottom: 1px solid white;
+    background: #29b0e2;
+    color: white;
+}
+.tr-content {
+    border-bottom: 1px solid #29b0e2;
+    background: white;
+    color: #29b0e2;
+}
+#shopDiv img {
+width: 25px;
+padding: 8px;
+display: inline;
+}
+</style>
+<script src="js/jquery-1.11.3.min.js"></script>
+<script>
+    $(document).bind('mobileinit',function(){
+        $.mobile.changePage.defaults.changeHash = true;
+        $.mobile.hashListeningEnabled = true;
+        $.mobile.pushStateEnabled = false;
+		$.mobile.allowCrossDomainPages = true;
+    });
+</script>
+<script src="js/jquery.mobile-1.4.5.min.js"></script>
+<script src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
+<script src="js/jssor.slider.min.js"></script>
+<script>
+var listCat = {id : null, name : null, result : null};
+//var marker = null;
+//var map = null;
+var defaultLatLng;
+$(document).on('pageshow', '#firstPage', function(e, data){
+    $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+			listCat.result = JSON.parse(result);
+			setTimeout(hideWelcome, 40000);
+			//ajax.parseJSONP(result);
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });
+});
+
+function hideWelcome() {
+  $.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
+}
+
+$(document).on('pageshow', '#map-page', function() {
+	defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
+	if ( navigator.geolocation ) {
+        function success(pos) {
+            // Location found, show map with these coordinates
+			defaultLatLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+            drawMap(defaultLatLng);
+        }
+        function fail(error) {
+            drawMap(defaultLatLng);  // Failed to find location, show default map
+        }
+        // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
+        navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000});
+    } else {
+        drawMap(defaultLatLng);  // No geolocation support, show default map
+    }
+    function drawMap(latlng) {
+        var myOptions = {
+            zoom: 12,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP
+        };
+        var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+		var marker = new google.maps.Marker({
+						position: latlng,
+						map: map,
+						title: "I am here"
+					});
+        // Add an overlay to the map of current lat/lng
+		$.each(listCat.result, function(i, row) {
+			$.each(row.shops, function(j, shoprow) {
+				//if(row.name == "Computer Shop")
+				try{
+					var msgDisplay = "Category:- " + row.name + " || Shop:- " + shoprow.title;
+					var loc1 = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
+					var marker2 = new google.maps.Marker({
+						position: loc1,
+						icon:'img/shopMark.png',
+						map: map,
+						title: msgDisplay
+					});
+					var infowindow = new google.maps.InfoWindow({
+					  content:msgDisplay
+					  });
+
+					google.maps.event.addListener(marker2, 'click', function() {
+					  infowindow.open(map,marker2);
+					  });
+				}catch(e){}
+			});
+		});
+    }	
+});
+
+$(document).on('pagebeforeshow', '#AboutUs', function(e, data){ 
+    $.ajax({url: "http://gaadigallery.com/api/webservices/aboutus/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+			$('#about').empty();
+			$('#AboutLoader').fadeOut(0, function(){
+				$('#about').append(result);
+			});
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });
+});
+
+$(document).on('pagebeforeshow', '#ContactUs', function(e, data){ 
+	$.ajax({url: "http://gaadigallery.com/api/webservices/contactus/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+			$('#contact').empty();
+			$('#ContactLoader').fadeOut(0, function(){
+				$('#contact').append(result);
+			});
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });
+});
+
+
+$(document).on('pagebeforeshow', '#list-category', function(e, data){		
+	$('#list-categories').empty();
+	$.each(listCat.result, function(i, row) {
+		if(row.count > 0) {
+			$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><img src="' + row.icon + '"/><h4>' + row.name + '</h4><p>' + row.description+ '</p></a></li>');
+		}
+	});		
+	$('#loader').fadeOut(0, function(){
+		$('#list-categories').listview('refresh');
+	});
+});
+
+
+$(document).on('vclick', '#list-categories li a', function(){  
+    listCat.name = $(this).attr('data-id');
+    $.mobile.changePage("#category-shop", { transition: "slide", changeHash: true});
+});
+
+$(document).on('vclick', '#filterSearch', function(){  
+    var radius = $('#points').val();
+	console.log(radius);
+    $('#shopsList').empty();
+    $.each(listCat.result, function(i, row) {
+		
+		var elem = document.createElement('textarea');
+		elem.innerHTML = row.name;
+		var decoded1 = elem.value;
+		elem.innerHTML = listCat.name;
+		var decoded2 = elem.value;
+		
+        if(decoded1 == decoded2) {
+			$.each(row.shops, function(j, shoprow) {
+				//console.log(shoprow);
+				try{ 
+					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
+					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
+					if(distance <= radius){
+					$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/><h4>' + shoprow.title + '</h4><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+					}
+				}catch(e){}
+			});
+			$('#shopsList').listview('refresh');
+        }
+    });
+	$.mobile.changePage("#category-shop", { transition: "slide", changeHash: true});
+});
+$(document).on('pagebeforeshow', '#category-shop', function(){      
+    $('#shopsList').empty();
+	$('#Cate').empty();
+	var radius = $('#points').val();
+    $.each(listCat.result, function(i, row) {
+		
+		var elem = document.createElement('textarea');
+		elem.innerHTML = row.name;
+		var decoded1 = elem.value;
+		elem.innerHTML = listCat.name;
+		var decoded2 = elem.value;
+		
+        if(decoded1 == decoded2) {
+			$('#Cate').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'</h3>');
+			$.each(row.shops, function(j, shoprow) {
+				//console.log(shoprow);
+				try{ 
+					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
+					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
+					if(distance <= radius){
+						$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/><h4>' + shoprow.title + '</h4><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+					}
+				}catch(e){}
+			});
+			$('#shopsList').listview('refresh');
+        }
+    });
+});
+
+$(document).on('vclick', '#shopsList li a', function(){  
+    listCat.id = $(this).attr('data-id');
+    $.mobile.changePage("#shop", {transition: "slide", changeHash: true});
+});
+
+$(document).on('pageshow', '#shop', function(){      
+    $('#shopImage').empty();
+	$('#shopAddress').empty();
+    $.each(listCat.result, function(i, row) {
+		
+		var elem = document.createElement('textarea');
+		elem.innerHTML = row.name;
+		var decoded1 = elem.value;
+		elem.innerHTML = listCat.name;
+		var decoded2 = elem.value;
+		
+        if(decoded1 == decoded2) {
+			
+			$.each(row.shops, function(j, shoprow) {
+				if(shoprow.id == listCat.id){
+					$('#catName').html(row.name);
+					$('#shopName').html(shoprow.title);
+					try{ 
+						var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
+						var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
+						distance = distance.toFixed(2);	
+						$('#shopImage').html('<img style="margin:0px auto;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/>');
+						$('#shopAddress').html(shoprow.content);
+						$('#shopDistance').html(distance);
+						$('#shopContact').html(shoprow.additional_information.telephone);
+						$('#shopEmail').html(shoprow.additional_information.email);
+						var myOptions1 = {
+								zoom: 14,
+								center: loc,
+								mapTypeId: google.maps.MapTypeId.ROADMAP
+						};
+						var map1 = new google.maps.Map(document.getElementById("displayMap"), myOptions1);
+						// Add an overlay to the map of current lat/lng
+						var marker1 = new google.maps.Marker({
+							position: loc,
+							icon:'img/shopMark.png',
+							map: map1,
+							title: "Greetings!"
+						});
+						var infowindow = new google.maps.InfoWindow({
+						  content:shoprow.title
+						  });
+
+						google.maps.event.addListener(marker1, 'click', function() {
+						  infowindow.open(map1,marker1);
+						  });
+						google.maps.event.trigger(map1, 'resize');
+					}catch(e){}
+					
+				}
+			});
+        }
+    });
+});
+</script>
+</head>
+<body>
+<div data-role="page" id="firstPage" style='background-color:white;' data-url="firstPage">
+    <div role="main" id="firstPageBody" style="position: relative; top: 100px; background-color:white;">
+		<img src="GaadiGallery.png" id="logo" style="margin:20px auto;display:block;"></img>
+		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><H3>DISCOVER BANGALORE CITY</h3><h4>(We are moving towards one solution..!)</h4></div>
+		<img src="img/Preloader.gif" id="loader0" style="margin:0px auto;display:block;"></img>
+    </div>
+</div>	
+<div data-role="page" id="map-page" data-url="map-page" data-dom-cache="true" style="overflow-y:hidden;">
+	<div data-role="panel" id="myPanel1" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li style="color: #29b0e2">Home</li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+    </div>
+    <div role="main" class="ui-content" id="map-canvas">
+		<!-- map loads here... -->
+    </div>
+	<div style="text-align: center; position: relative; bottom: 18%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
+</div>
+
+<div data-role="page" id="list-category" data-url="list-category" data-dom-cache="true">
+	<div data-theme="a" data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" id="list-shop">
+		<script>
+        jssor_1_slider_init = function() {
+            var jssor_1_SlideshowTransitions = [
+              {$Duration:1200,$Opacity:2}
+            ];
+            var jssor_1_options = {
+              $AutoPlay: true,
+              $SlideshowOptions: {
+                $Class: $JssorSlideshowRunner$,
+                $Transitions: jssor_1_SlideshowTransitions,
+                $TransitionsOrder: 1
+              },
+              $ArrowNavigatorOptions: {
+                $Class: $JssorArrowNavigator$
+              },
+              $BulletNavigatorOptions: {
+                $Class: $JssorBulletNavigator$
+              }
+            };
+            var jssor_1_slider = new $JssorSlider$("jssor_1", jssor_1_options);
+            //responsive code begin
+            //you can remove responsive code if you don't want the slider scales while window resizing
+            function ScaleSlider() {
+                var refSize = jssor_1_slider.$Elmt.parentNode.clientWidth;
+                if (refSize) {
+                    refSize = Math.min(refSize, 600);
+                    jssor_1_slider.$ScaleWidth(refSize);
+                }
+                else {
+                    window.setTimeout(ScaleSlider, 30);
+                }
+            }
+            ScaleSlider();
+            $Jssor$.$AddEvent(window, "load", ScaleSlider);
+            $Jssor$.$AddEvent(window, "resize", ScaleSlider);
+            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+            //responsive code end
+        };
+    </script>
+
+    <style>
+        
+        /* jssor slider bullet navigator skin 05 css */
+        /*
+        .jssorb05 div           (normal)
+        .jssorb05 div:hover     (normal mouseover)
+        .jssorb05 .av           (active)
+        .jssorb05 .av:hover     (active mouseover)
+        .jssorb05 .dn           (mousedown)
+        */
+        .jssorb05 {
+            position: absolute;
+        }
+        .jssorb05 div, .jssorb05 div:hover, .jssorb05 .av {
+            position: absolute;
+            /* size of bullet elment */
+            width: 16px;
+            height: 16px;
+            background: url('img/b05.png') no-repeat;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .jssorb05 div { background-position: -7px -7px; }
+        .jssorb05 div:hover, .jssorb05 .av:hover { background-position: -37px -7px; }
+        .jssorb05 .av { background-position: -67px -7px; }
+        .jssorb05 .dn, .jssorb05 .dn:hover { background-position: -97px -7px; }
+
+        /* jssor slider arrow navigator skin 12 css */
+        /*
+        .jssora12l                  (normal)
+        .jssora12r                  (normal)
+        .jssora12l:hover            (normal mouseover)
+        .jssora12r:hover            (normal mouseover)
+        .jssora12l.jssora12ldn      (mousedown)
+        .jssora12r.jssora12rdn      (mousedown)
+        */
+        .jssora12l, .jssora12r {
+            display: block;
+            position: absolute;
+            /* size of arrow element */
+            width: 30px;
+            height: 46px;
+            cursor: pointer;
+            background: url('img/a12.png') no-repeat;
+            overflow: hidden;
+        }
+        .jssora12l { background-position: -16px -37px; }
+        .jssora12r { background-position: -75px -37px; }
+        .jssora12l:hover { background-position: -136px -37px; }
+        .jssora12r:hover { background-position: -195px -37px; }
+        .jssora12l.jssora12ldn { background-position: -256px -37px; }
+        .jssora12r.jssora12rdn { background-position: -315px -37px; }
+    </style>
+
+
+    <div id="jssor_1" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
+        <!-- Loading Screen -->
+        <div data-u="loading" style="position: absolute; top: 0px; left: 0px;">
+            <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block; top: 0px; left: 0px; width: 100%; height: 100%;"></div>
+            <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
+        </div>
+        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/02.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/04.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/05.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/09.jpg" />
+            </div>
+        </div>
+        <!-- Bullet Navigator -->
+        <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
+            <!-- bullet navigator item prototype -->
+            <div data-u="prototype" style="width:16px;height:16px;"></div>
+        </div>
+        <!-- Arrow Navigator -->
+        <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <a href="http://www.jssor.com" style="display:none">Slideshow Maker</a>
+    </div>
+    <script>
+        jssor_1_slider_init();
+    </script>
+		<form class="ui-filterable">
+			<input id="myFilter" data-type="search" placeholder="Search a Category...">
+		</form>
+		<img src="img/Preloader.gif" id="loader" style="margin:20px auto;display:block;"></img>
+		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="false">
+		  
+		</ul>
+    </div>
+	
+</div>
+
+<div data-role="page" id="category-shop" data-url="category-shop" data-dom-cache="true">
+	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">About Us</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" id="book-shop">
+		<div>
+			<a href="#AdvancedFilter" id="af" data-rel="popup" class="ui-btn ui-icon-bullets ui-btn-icon-left" data-position-to="#af">Advanced filter</a>
+		</div>
+		<div data-role="popup" id="AdvancedFilter" class="ui-content" style="min-width:250px;" data-arrow="t">
+			<a href="#" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<div>
+			  <h3>Advanced Filter</h3>
+				<label for="points">Distance (in km):</label>
+				<input type="range" name="points" id="points" value="30" min="1" max="30" data-highlight="true" data-show-value="true">
+				<input type="button" data-inline="true" id="filterSearch" value="Search">
+			</div>
+		</div>
+		<form class="ui-filterable">
+			<input id="myFilter1" data-type="search" placeholder="Location...">
+		</form>
+		<p id="Cate"></p>
+		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="false">
+		  
+		</ul>
+    </div>
+</div>
+<div data-role="page" id="shop" data-url="shop" data-dom-cache="true">
+	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#">Contact Us</a></li>
+			<li><a href="#">About Us</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main">
+		<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">
+			<tr>
+			  <td class="tr-head">Category</td>
+			  <td id="catName" class="tr-content">Category Name</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Shop</td>
+			  <td id="shopName" class="tr-content">Shop Name</td>
+			</tr>
+			<tr>
+			  <td colspan="2">
+				<div style="position: relative;">
+				  <div id="shopImage">
+				  </div>
+				  <div id="shopDiv" style="text-align: center; position: absolute;top: 5px; width: 100%">
+					<a href="">
+						<img src="img/call.png"/>
+					</a>
+					<a href="">
+						<img src="img/shopMark.png"/>
+					</a>
+					<a href="">
+						<img src="img/share.png"/>
+					</a>
+					<a href="">
+						<img src="img/rate.png"/>
+					</a>
+				  </div>
+				</div>
+			  </td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Address</td>
+			  <td id="shopAddress" class="tr-content">Shop Address</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Contact No.</td>
+			  <td id="shopContact" class="tr-content">Shop Contact no.</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Email id</td>
+			  <td id="shopEmail" class="tr-content">Shop Email id</td>
+			</tr>
+			<tr>
+			  <td class="tr-head">Far Away (in km)</td>
+			  <td id="shopDistance" class="tr-content">Shop Distance</td>
+			</tr>
+		</table>
+		<div style="height:350px" id="displayMap"></div>
+		<ul data-role="listview" data-inset="true">    
+		  <li data-icon="carat-r"><a href="#">Reviews</a></li> 
+		  <li data-icon="carat-r"><a href="#">More Information</a></li>
+		  <li data-icon="carat-r"><a href="#">Working Hours</a></li> 
+		  <li data-icon="carat-r"><a href="#">Map and Directions</a></li>
+		</ul>
+    </div>
+</div>
+<div data-role="page" id="AboutUs" style="background-color:white;" data-url="AboutUs">
+	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li style="color: #29b0e2">About Us</li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" style="background-color:white;" class="ui-content" id="about-us">
+		<img src="img/Preloader.gif" id="AboutLoader" style="margin:20px auto;display:block;"></img>
+		<h3 id="about"></h3>
+    </div>
+	
+</div>
+
+<div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
+	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li style="color: #29b0e2">Contact Us</li>
+			<li><a href="#AboutUs">About Us</a></li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">App Map</a></li>
+		</ul>
+	</div>
+    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
+		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
+		<h3 id="contact"></h3>
+    </div>
+	
+</div>
+
+</body>
+</html>
