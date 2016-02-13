@@ -50,7 +50,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			setTimeout(hideWelcome, 40000);
+			setTimeout(hideWelcome, 25000);
 			//ajax.parseJSONP(result);
         },
         error: function (request,error) {
