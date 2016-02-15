@@ -272,8 +272,11 @@ $(document).on('pageshow', '#shop', function(){
 						$('#shopContact').html(shoprow.additional_information.telephone);
 						$('#shopEmail').html(shoprow.additional_information.email);
 						if(shoprow.additional_information.telephone){$("#callID").attr("href", "tel:"+shoprow.additional_information.telephone);}
-						$("#shareID").attr("href", 'whatsapp://send?text="'+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone+'"');
+						//$("#shareID").attr("href", 'whatsapp://send?text='+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
 						//$("#shareID").attr("href", "whatsapp://send?text=Hello%20World!");
+						$(document).on('vclick', '#shareID', function(){  
+							window.plugins.socialsharing.share('"'+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone+'"',"GaadiGallery",shoprow.featured_image,null);
+						});
 						var myOptions1 = {
 								zoom: 14,
 								center: loc,
