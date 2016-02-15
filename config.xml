@@ -4,6 +4,7 @@
   <author href="http://phonegap.com" email="support@phonegap.com">PhoneGap Team</author>
   <content src="index.html"/>
   <preference name="permissions" value="none"/>
+  <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
   <preference name="orientation" value="default"/>
   <preference name="target-device" value="universal"/>
   <preference name="fullscreen" value="false"/>
@@ -37,6 +38,9 @@
   <gap:plugin name="org.apache.cordova.network-information"/>
   <gap:plugin name="org.apache.cordova.splashscreen"/>
   <gap:plugin name="org.apache.cordova.vibration"/>
+  <feature name="SocialSharing">
+	<param name="android-package" value="nl.xservices.plugins.SocialSharing" />
+  </feature>
   <icon src="GaadiGallery.png"/>
   <icon src="www/res/icon/android/icon-36-ldpi.png" gap:platform="android" gap:qualifier="ldpi"/>
   <icon src="www/res/icon/android/icon-48-mdpi.png" gap:platform="android" gap:qualifier="mdpi"/>
