@@ -272,8 +272,8 @@ $(document).on('pageshow', '#shop', function(){
 						$('#shopContact').html(shoprow.additional_information.telephone);
 						$('#shopEmail').html(shoprow.additional_information.email);
 						if(shoprow.additional_information.telephone){$("#callID").attr("href", "tel:"+shoprow.additional_information.telephone);}
-						//$("#shareID").attr("href", "whatsapp://send?text="+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
-						$("#shareID").attr("href", "whatsapp://send?text=Hello%20World!");
+						$("#shareID").attr("href", 'whatsapp://send?text="'+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone+'"');
+						//$("#shareID").attr("href", "whatsapp://send?text=Hello%20World!");
 						var myOptions1 = {
 								zoom: 14,
 								center: loc,
