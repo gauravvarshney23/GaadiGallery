@@ -205,7 +205,7 @@ $(document).on('vclick', '#filterSearch', function(){
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
 					//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
-					$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;">Address: '+shoprow.additional_information.map.address+'</div></li>');
+					$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;" class="ui-content"><p>'+shoprow.additional_information.map.address+'</p></div></li>');
 					}
 				}catch(e){}
 			});
@@ -235,7 +235,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
 						//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
-						$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;">Address: '+shoprow.additional_information.map.address+'</div></li>');
+						$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;" class="ui-content"><p>'+shoprow.additional_information.map.address+'</p></div></li>');
 					}
 				}catch(e){}
 			});
@@ -331,7 +331,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
     </div>
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
@@ -352,7 +352,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="list-shop">
@@ -508,7 +508,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="book-shop">
@@ -546,7 +546,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main">
@@ -607,7 +607,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="about-us">
@@ -630,7 +630,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
