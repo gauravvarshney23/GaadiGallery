@@ -23,20 +23,22 @@ background-color: white;
 }
 
 .has-odd-thumb li a {
-    padding-left: 80px !important;
+    padding-left: 50px !important;
 }
 .thumbContainer {
     position: absolute;
     left: 0; top: 0; bottom: 0;
-    width: 80px;
+    width: 50px;
 }
 .thumbContainer img {
-    position: absolute;
+    position: relative;
     margin: auto;
+	padding: 5px;
     bottom: 0; left: 0; top: 0; right: 0;
-    max-width: 50px;
-    max-height: 50px;
+    width: 40px;
+    height: 40px;
 }
+
 .ui-icon-myicon:after {
 background-image: url("img/like.png");
 background-size: 18px 18px;
@@ -65,7 +67,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			setTimeout(hideWelcome, 20000);
+			setTimeout(hideWelcome, 6000);
 			//ajax.parseJSONP(result);
         },
         error: function (request,error) {
@@ -169,7 +171,7 @@ $(document).on('pagebeforeshow', '#list-category', function(e, data){
 	$('#list-categories').empty();
 	$.each(listCat.result, function(i, row) {
 		if(row.count > 0) {
-			$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><div class="thumbContainer"><img src="' + row.icon + '"/></div><p style="font-size: 13px;font-weight: bold;">' + row.name + '</p><p>' + row.description+ '</p></a></li>');
+			$('#list-categories').append('<li><a href="" data-id="'+ row.name +'"><div class="thumbContainer"><img src="' + row.icon + '"/></div><p style="font-size: 12px;font-weight: bold;">' + row.name + '</p><p>' + row.description+ '</p></a></li>');
 		}
 	});		
 	$('#loader').fadeOut(0, function(){
@@ -202,7 +204,8 @@ $(document).on('vclick', '#filterSearch', function(){
 					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
-					$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+					//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+					$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;">Address: '+shoprow.additional_information.map.address+'</div></li>');
 					}
 				}catch(e){}
 			});
@@ -231,7 +234,8 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
-						$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+						//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
+						$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;">Address: '+shoprow.additional_information.map.address+'</div></li>');
 					}
 				}catch(e){}
 			});
@@ -240,7 +244,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
     });
 });
 
-$(document).on('vclick', '#shopsList li a', function(){  
+$(document).on('vclick', '#shopsList li img', function(){  
     listCat.id = $(this).attr('data-id');
     $.mobile.changePage("#shop", {transition: "slide", changeHash: true});
 });
@@ -260,23 +264,22 @@ $(document).on('pageshow', '#shop', function(){
 			
 			$.each(row.shops, function(j, shoprow) {
 				if(shoprow.id == listCat.id){
-					$('#catName').html(row.name);
+					//$('#catName').html(row.name);
 					$('#shopName').html(shoprow.title);
 					try{ 
 						var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 						var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 						distance = distance.toFixed(2);	
-						$('#shopImage').html('<img style="margin:0px auto;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/>');
+						$('#shopImage').html('<img style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/>');
 						$('#shopAddress').html(shoprow.content);
 						$('#shopDistance').html(distance);
 						$('#shopContact').html(shoprow.additional_information.telephone);
 						$('#shopEmail').html(shoprow.additional_information.email);
 						if(shoprow.additional_information.telephone){$("#callID").attr("href", "tel:"+shoprow.additional_information.telephone);}
-						//$("#shareID").attr("href", 'whatsapp://send?text='+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
+						var temp = encodeURIComponent(shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
+						$("#shareID").attr("href", 'whatsapp://send?text='+temp);
 						//$("#shareID").attr("href", "whatsapp://send?text=Hello%20World!");
-						$(document).on('vclick', '#shareID', function(){  
-							window.plugins.socialsharing.share('"'+shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone+'"',"GaadiGallery",shoprow.featured_image,null);
-						});
+						
 						var myOptions1 = {
 								zoom: 14,
 								center: loc,
@@ -328,7 +331,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
     </div>
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
@@ -349,7 +352,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="list-shop">
@@ -482,7 +485,7 @@ $(document).on('pageshow', '#shop', function(){
         jssor_1_slider_init();
     </script>
 		<form class="ui-filterable">
-			<input id="myFilter" data-type="search" placeholder="Search a Category...">
+			<div style="padding-left:10px;padding-right:10px"><input id="myFilter" data-type="search" placeholder="Search a Category..."></div>
 		</form>
 		<img src="img/Preloader.gif" id="loader" style="margin:20px auto;display:block;"></img>
 		<ul data-role="listview" id="list-categories" data-filter="true" data-input="#myFilter" data-inset="false" class="has-odd-thumb">
@@ -505,7 +508,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="book-shop">
@@ -522,10 +525,10 @@ $(document).on('pageshow', '#shop', function(){
 			</div>
 		</div>
 		<form class="ui-filterable">
-			<input id="myFilter1" data-type="search" placeholder="Location...">
+			<div style="padding-left:10px;padding-right:10px"><input id="myFilter1" data-type="search" placeholder="Search Shop..."></div
 		</form>
-		<p id="Cate"></p>
-		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="false" class="has-odd-thumb">
+		<div style="padding-left:10px;"><p id="Cate"></p></div>
+		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="false">
 		  
 		</ul>
     </div>
@@ -543,34 +546,24 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
 		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main">
-		<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">
-			<tr>
-			  <td class="tr-head">Category</td>
-			  <td id="catName" class="tr-content">Category Name</td>
-			</tr>
-			<tr>
-			  <td class="tr-head">Shop</td>
-			  <td id="shopName" class="tr-content">Shop Name</td>
-			</tr>
-			<tr>
-			  <td colspan="2">
-				<div style="position: relative;">
-				  <div id="shopImage">
-				  </div>
-				  <div id="shopDiv" style="text-align: center; position: absolute;top: 5px; width: 100%">
-					<a id="callID" href="tel:8888888888" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a>
-					<a href="#mapPopUp" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-location ui-btn-icon-notext" data-transition="turn">Map</a>
-					<a id="shareID" href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-action ui-btn-icon-notext" data-transition="slide">share</a>
-					<a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-star ui-btn-icon-notext" data-transition="slide">Rating</a>
-					<a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a>
-				  </div>
-				</div>
-			  </td>
-			</tr>
+		<div style="position: relative;">
+		  <div id="shopImage">
+		  </div>
+		  <div id="shopDiv" style="text-align: center; position: absolute;top: 5px; width: 100%">
+			<a id="callID" href="tel:8888888888" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a>
+			<a href="#mapPopUp" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-location ui-btn-icon-notext" data-transition="turn">Map</a>
+			<a id="shareID" href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-action ui-btn-icon-notext" data-transition="slide">share</a>
+			<a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-star ui-btn-icon-notext" data-transition="slide">Rating</a>
+			<a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a>
+		  </div>
+		  <div id="shopName" style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%"></div>
+		</div>
+			  
+		<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">	
 			<tr>
 			  <td class="tr-head">Address</td>
 			  <td id="shopAddress" class="tr-content">Shop Address</td>
@@ -590,7 +583,7 @@ $(document).on('pageshow', '#shop', function(){
 		</table>
 		<div data-role="popup" id="mapPopUp">
 			<a href="#shop" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
-			<div style="height:300px;width:300px;text-align:center;" id="displayMap"></div>
+			<div style="height:305px;width:305px;text-align:center;" id="displayMap"></div>
 		</div>
 		
 		<ul data-role="listview" data-inset="true">    
@@ -614,7 +607,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="about-us">
@@ -637,7 +630,7 @@ $(document).on('pageshow', '#shop', function(){
 	</div>
     <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<b><label style="text-align:center; font-size: 1.5em;">GAADI GALLERY</label></b>
+		<label style="text-align:center; font-size: 1.3em;padding-top:6px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
