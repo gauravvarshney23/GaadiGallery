@@ -4,7 +4,13 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
 <style> 
-#map-page, #map-canvas{ width: 100%; height: 100%; padding: 0; }
+#map-page, #map-canvas{ width: 100%; height: 100%;  }
+.ui-page{
+	padding: 0 !important;
+}
+.ui-bar-b{
+	background-color: rgba(101, 193, 226, 0.5); margin: 6px; width: 98.5%; border: 2px solid #82A1C1; border-radius: 25px
+}
 
 .ui-body-f {
 font-weight: bold;
@@ -12,8 +18,8 @@ padding: 0;
 background-color: white;
 }
 .tr-head {
-    border-bottom: 1px solid white;
-    background: #29b0e2;
+    border-bottom: 1px solid #29b0e2;
+    background: rgba(101, 193, 226, 0.5);
     color: white;
 }
 .tr-content {
@@ -44,6 +50,59 @@ background-image: url("img/like.png");
 background-size: 18px 18px;
 }
 </style>
+  <style>
+        
+        /* jssor slider bullet navigator skin 05 css */
+        /*
+        .jssorb05 div           (normal)
+        .jssorb05 div:hover     (normal mouseover)
+        .jssorb05 .av           (active)
+        .jssorb05 .av:hover     (active mouseover)
+        .jssorb05 .dn           (mousedown)
+        */
+        .jssorb05 {
+            position: absolute;
+        }
+        .jssorb05 div, .jssorb05 div:hover, .jssorb05 .av {
+            position: absolute;
+            /* size of bullet elment */
+            width: 16px;
+            height: 16px;
+            background: url('img/b05.png') no-repeat;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        .jssorb05 div { background-position: -7px -7px; }
+        .jssorb05 div:hover, .jssorb05 .av:hover { background-position: -37px -7px; }
+        .jssorb05 .av { background-position: -67px -7px; }
+        .jssorb05 .dn, .jssorb05 .dn:hover { background-position: -97px -7px; }
+
+        /* jssor slider arrow navigator skin 12 css */
+        /*
+        .jssora12l                  (normal)
+        .jssora12r                  (normal)
+        .jssora12l:hover            (normal mouseover)
+        .jssora12r:hover            (normal mouseover)
+        .jssora12l.jssora12ldn      (mousedown)
+        .jssora12r.jssora12rdn      (mousedown)
+        */
+        .jssora12l, .jssora12r {
+            display: block;
+            position: absolute;
+            /* size of arrow element */
+            width: 30px;
+            height: 46px;
+            cursor: pointer;
+            background: url('img/a12.png') no-repeat;
+            overflow: hidden;
+        }
+        .jssora12l { background-position: -16px -37px; }
+        .jssora12r { background-position: -75px -37px; }
+        .jssora12l:hover { background-position: -136px -37px; }
+        .jssora12r:hover { background-position: -195px -37px; }
+        .jssora12l.jssora12ldn { background-position: -256px -37px; }
+        .jssora12r.jssora12rdn { background-position: -315px -37px; }
+    </style>
 <script src="js/jquery-1.11.3.min.js"></script>
 <script>
     $(document).bind('mobileinit',function(){
@@ -67,18 +126,13 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			setTimeout(hideWelcome, 6000);
-			//ajax.parseJSONP(result);
+			 $.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
         },
         error: function (request,error) {
             alert('Network error has occurred please try again!');
         }
     });
 });
-
-function hideWelcome() {
-  $.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
-}
 
 $(document).on('pageshow', '#map-page', function() {
 	defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
@@ -271,10 +325,20 @@ $(document).on('pageshow', '#shop', function(){
 						var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 						distance = distance.toFixed(2);	
 						$('#shopImage').html('<img style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/>');
+						$('#shopContent').html(shoprow.content);
 						$('#shopAddress').html(shoprow.content);
 						$('#shopDistance').html(distance);
 						$('#shopContact').html(shoprow.additional_information.telephone);
 						$('#shopEmail').html(shoprow.additional_information.email);
+			//----for working hrs
+						$('#wkHrsMonday').html(shoprow.additional_information.openingHoursMonday);
+						$('#wkHrsTuesday').html(shoprow.additional_information.openingHoursTuesday);
+						$('#wkHrsWednesday').html(shoprow.additional_information.openingHoursWednesday);
+						$('#wkHrsThursday').html(shoprow.additional_information.openingHoursThursday);
+						$('#wkHrsFriday').html(shoprow.additional_information.openingHoursFriday);
+						$('#wkHrsSaturday').html(shoprow.additional_information.openingHoursSatday);
+						$('#wkHrsSunday').html(shoprow.additional_information.openingHoursSunnday);
+			//========================
 						if(shoprow.additional_information.telephone){$("#callID").attr("href", "tel:"+shoprow.additional_information.telephone);}
 						var temp = encodeURIComponent(shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
 						$("#shareID").attr("href", 'whatsapp://send?text='+temp);
@@ -323,13 +387,17 @@ $(document).on('pageshow', '#shop', function(){
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
 			<li style="color: #29b0e2">Home</li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">App Map</a></li>
+			
+			
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
     </div>
@@ -343,14 +411,16 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-theme="a" data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li><a href="#map-page">Home</a></li>
+			<li style="color: #29b0e2">Home</li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li style="color: #29b0e2">Category</li>
-			<li><a href="#">App Map</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -396,59 +466,6 @@ $(document).on('pageshow', '#shop', function(){
         };
     </script>
 
-    <style>
-        
-        /* jssor slider bullet navigator skin 05 css */
-        /*
-        .jssorb05 div           (normal)
-        .jssorb05 div:hover     (normal mouseover)
-        .jssorb05 .av           (active)
-        .jssorb05 .av:hover     (active mouseover)
-        .jssorb05 .dn           (mousedown)
-        */
-        .jssorb05 {
-            position: absolute;
-        }
-        .jssorb05 div, .jssorb05 div:hover, .jssorb05 .av {
-            position: absolute;
-            /* size of bullet elment */
-            width: 16px;
-            height: 16px;
-            background: url('img/b05.png') no-repeat;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .jssorb05 div { background-position: -7px -7px; }
-        .jssorb05 div:hover, .jssorb05 .av:hover { background-position: -37px -7px; }
-        .jssorb05 .av { background-position: -67px -7px; }
-        .jssorb05 .dn, .jssorb05 .dn:hover { background-position: -97px -7px; }
-
-        /* jssor slider arrow navigator skin 12 css */
-        /*
-        .jssora12l                  (normal)
-        .jssora12r                  (normal)
-        .jssora12l:hover            (normal mouseover)
-        .jssora12r:hover            (normal mouseover)
-        .jssora12l.jssora12ldn      (mousedown)
-        .jssora12r.jssora12rdn      (mousedown)
-        */
-        .jssora12l, .jssora12r {
-            display: block;
-            position: absolute;
-            /* size of arrow element */
-            width: 30px;
-            height: 46px;
-            cursor: pointer;
-            background: url('img/a12.png') no-repeat;
-            overflow: hidden;
-        }
-        .jssora12l { background-position: -16px -37px; }
-        .jssora12r { background-position: -75px -37px; }
-        .jssora12l:hover { background-position: -136px -37px; }
-        .jssora12r:hover { background-position: -195px -37px; }
-        .jssora12l.jssora12ldn { background-position: -256px -37px; }
-        .jssora12r.jssora12rdn { background-position: -315px -37px; }
-    </style>
 
 
     <div id="jssor_1" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
@@ -464,12 +481,6 @@ $(document).on('pageshow', '#shop', function(){
             <div data-p="112.50" style="display: none;">
                 <img data-u="image" src="img/04.jpg" />
             </div>
-            <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/05.jpg" />
-            </div>
-            <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/09.jpg" />
-            </div>
         </div>
         <!-- Bullet Navigator -->
         <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
@@ -479,7 +490,6 @@ $(document).on('pageshow', '#shop', function(){
         <!-- Arrow Navigator -->
         <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
         <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
-        <a href="http://www.jssor.com" style="display:none">Slideshow Maker</a>
     </div>
     <script>
         jssor_1_slider_init();
@@ -499,19 +509,89 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li><a href="#map-page">Home</a></li>
-			<li><a href="#">Contact Us</a></li>
-			<li><a href="#">About Us</a></li>
-			<li style="color: #29b0e2">Category</li>
-			<li><a href="#">App Map</a></li>
+			<li style="color: #29b0e2">Home</li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="book-shop">
+    <script>
+        jssor_2_slider_init = function() {
+            var jssor_2_SlideshowTransitions = [
+              {$Duration:1200,$Opacity:2}
+            ];
+            var jssor_2_options = {
+              $AutoPlay: true,
+              $SlideshowOptions: {
+                $Class: $JssorSlideshowRunner$,
+                $Transitions: jssor_2_SlideshowTransitions,
+                $TransitionsOrder: 1
+              },
+              $ArrowNavigatorOptions: {
+                $Class: $JssorArrowNavigator$
+              },
+              $BulletNavigatorOptions: {
+                $Class: $JssorBulletNavigator$
+              }
+            };
+            var jssor_2_slider = new $JssorSlider$("jssor_2", jssor_2_options);
+            //responsive code begin
+            //you can remove responsive code if you don't want the slider scales while window resizing
+            function ScaleSlider() {
+                var refSize = jssor_2_slider.$Elmt.parentNode.clientWidth;
+                if (refSize) {
+                    refSize = Math.min(refSize, 600);
+                    jssor_2_slider.$ScaleWidth(refSize);
+                }
+                else {
+                    window.setTimeout(ScaleSlider, 30);
+                }
+            }
+            ScaleSlider();
+            $Jssor$.$AddEvent(window, "load", ScaleSlider);
+            $Jssor$.$AddEvent(window, "resize", ScaleSlider);
+            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+            //responsive code end
+        };
+    </script>
+
+
+
+    <div id="jssor_2" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
+        <!-- Loading Screen -->
+        <div data-u="loading" style="position: absolute; top: 0px; left: 0px;">
+            <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block; top: 0px; left: 0px; width: 100%; height: 100%;"></div>
+            <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
+        </div>
+        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/05.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/03.jpg" />
+            </div>
+        </div>
+        <!-- Bullet Navigator -->
+        <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
+            <!-- bullet navigator item prototype -->
+            <div data-u="prototype" style="width:16px;height:16px;"></div>
+        </div>
+        <!-- Arrow Navigator -->
+        <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
+    </div>
+    <script>
+        jssor_2_slider_init();
+    </script>
 		<div>
 			<a href="#AdvancedFilter" id="af" data-rel="popup" class="ui-btn ui-icon-bullets ui-btn-icon-left" data-position-to="#af">Advanced filter</a>
 		</div>
@@ -537,14 +617,16 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li><a href="#map-page">Home</a></li>
-			<li><a href="#">Contact Us</a></li>
-			<li><a href="#">About Us</a></li>
-			<li style="color: #29b0e2">Category</li>
-			<li><a href="#">App Map</a></li>
+			<li style="color: #29b0e2">Home</li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -553,7 +635,7 @@ $(document).on('pageshow', '#shop', function(){
 		<div style="position: relative;">
 		  <div id="shopImage">
 		  </div>
-		  <div id="shopDiv" style="text-align: center; position: absolute;top: 5px; width: 100%">
+		  <div id="shopDiv" style="text-align: center; position: absolute;top: 60px; width: 100%">
 			<a id="callID" href="tel:8888888888" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a>
 			<a href="#mapPopUp" data-rel="popup" data-position-to="window" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-location ui-btn-icon-notext" data-transition="turn">Map</a>
 			<a id="shareID" href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-action ui-btn-icon-notext" data-transition="slide">share</a>
@@ -562,34 +644,75 @@ $(document).on('pageshow', '#shop', function(){
 		  </div>
 		  <div id="shopName" style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%"></div>
 		</div>
-			  
-		<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">	
-			<tr>
-			  <td class="tr-head">Address</td>
-			  <td id="shopAddress" class="tr-content">Shop Address</td>
-			</tr>
-			<tr>
-			  <td class="tr-head">Contact No.</td>
-			  <td id="shopContact" class="tr-content">Shop Contact no.</td>
-			</tr>
-			<tr>
-			  <td class="tr-head">Email id</td>
-			  <td id="shopEmail" class="tr-content">Shop Email id</td>
-			</tr>
-			<tr>
-			  <td class="tr-head">Far Away (in km)</td>
-			  <td id="shopDistance" class="tr-content">Shop Distance</td>
-			</tr>
-		</table>
+		<span id="shopAddress"></span>  
+		
 		<div data-role="popup" id="mapPopUp">
 			<a href="#shop" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
 			<div style="height:305px;width:305px;text-align:center;" id="displayMap"></div>
 		</div>
-		
+	<!-- popup for additional info-->	
+		<div data-role="popup" id="moreInfoPopUp">
+			<a href="#shop" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<div style="width:305px;text-align:center;">
+				<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">	
+					<tr>
+					  <td class="tr-head">Address</td>
+					  <td id="shopContent" class="tr-content">Shop Address</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Contact No.</td>
+					  <td id="shopContact" class="tr-content">Shop Contact no.</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Email id</td>
+					  <td id="shopEmail" class="tr-content">Shop Email id</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Far Away (in km)</td>
+					  <td id="shopDistance" class="tr-content">Shop Distance</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	<!-------------------------------->	
+	<!-- popup for working hrs-->	
+		<div data-role="popup" id="wkHrsPopUp">
+			<a href="#shop" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a>
+			<div style="width:305px;text-align:center;">
+				<table data-role="table" data-mode="" class="ui-responsive ui-shadow" id="shopTable">	
+					<tr>
+					  <td class="tr-head">Monday</td>
+					  <td id="wkHrsMonday" class="tr-content">NA</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Tuesday</td>
+					  <td id="wkHrsTuesday" class="tr-content">NA</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Wednesday</td>
+					  <td id="wkHrsWednesday" class="tr-content">NA</td>
+					</tr>
+					<tr>
+					  <td class="tr-head">Thursday</td>
+					  <td id="wkHrsThursday" class="tr-content">NA</td>
+					</tr><tr>
+					  <td class="tr-head">Friday</td>
+					  <td id="wkHrsFriday" class="tr-content">NA</td>
+					</tr><tr>
+					  <td class="tr-head">Saturday</td>
+					  <td id="wkHrsSaturday" class="tr-content">NA</td>
+					</tr><tr>
+					  <td class="tr-head">Sunday</td>
+					  <td id="wkHrsSunday" class="tr-content">NA</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	<!-------------------------------->	
 		<ul data-role="listview" data-inset="true">    
 		  <li data-icon="carat-r"><a href="#">Reviews</a></li> 
-		  <li data-icon="carat-r"><a href="#">More Information</a></li>
-		  <li data-icon="carat-r"><a href="#">Working Hours</a></li> 
+		  <li data-icon="carat-r"><a href="#moreInfoPopUp" data-rel="popup" data-position-to="window" data-transition="turn">More Information</a></li>
+		  <li data-icon="carat-r"><a href="#wkHrsPopUp" data-rel="popup" data-position-to="window" data-transition="turn">Working Hours</a></li> 
 		  <li data-icon="carat-r"><a href="#mapPopUp" data-rel="popup" data-position-to="window" data-transition="turn">Map and Directions</a></li>
 		</ul>
     </div>
@@ -598,14 +721,16 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li><a href="#map-page">Home</a></li>
-			<li><a href="#ContactUs">Contact Us</a></li>
-			<li style="color: #29b0e2">About Us</li>
+			<li style="color: #29b0e2">Home</li>
 			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">App Map</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
@@ -621,14 +746,16 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li><a href="#map-page">Home</a></li>
-			<li style="color: #29b0e2">Contact Us</li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<li style="color: #29b0e2">Home</li>
 			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">App Map</a></li>
+			<li><a href="#">Services</a></li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
 		</ul>
 	</div>
-    <div data-role="header" style="background-color: #29b0e2" data-theme="b" data-position="fixed">
+    <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
