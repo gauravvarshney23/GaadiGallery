@@ -143,9 +143,9 @@ $(document).on('pageshow', '#map-page', function() {
             drawMap(defaultLatLng);
         }
         function fail(error) {
-			//if(error.message == "User denied Geolocation")
-				alert("Please enable the GPS");
-			console.log(error.message);
+			//if(error.code == 1)
+				alert(error.code);
+			//console.log(error.code);
             drawMap(defaultLatLng);  // Failed to find location, show default map
         }
         // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
