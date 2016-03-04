@@ -143,7 +143,7 @@ $(document).on('pageshow', '#map-page', function() {
             drawMap(defaultLatLng);
         }
         function fail(error) {
-			if(error.message == "User denied Geolocation")
+			//if(error.message == "User denied Geolocation")
 				alert("Please enable the GPS");
 			console.log(error.message);
             drawMap(defaultLatLng);  // Failed to find location, show default map
