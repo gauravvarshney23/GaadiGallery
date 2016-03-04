@@ -29,7 +29,7 @@ background-color: white;
 }
 
 .has-odd-thumb li a {
-    padding-left: 50px !important;
+    padding-left: 70px !important;
 }
 .thumbContainer {
     position: absolute;
@@ -39,7 +39,7 @@ background-color: white;
 .thumbContainer img {
     position: relative;
     margin: auto;
-	padding: 5px;
+	padding: 10px;
     bottom: 0; left: 0; top: 0; right: 0;
     width: 40px;
     height: 40px;
@@ -258,8 +258,7 @@ $(document).on('vclick', '#filterSearch', function(){
 					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
-					//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
-					$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;" class="ui-content"><p>'+shoprow.additional_information.map.address+'</p></div></li>');
+						$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;" class="ui-content"><p>'+shoprow.additional_information.map.address+'</p></div></li>');
 					}
 				}catch(e){}
 			});
@@ -288,7 +287,6 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 					var loc = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
 					if(distance <= radius){
-						//$('#shopsList').append('<li><a href="" data-id="'+ shoprow.id +'"><div class="thumbContainer"><img src="' + shoprow.featured_image + '" class="ui-li-icon"/></div><p style="font-size: 13px;font-weight: bold;">' + shoprow.title + '</p><p>' + shoprow.additional_information.map.address + '</p></a></li>');
 						$('#shopsList').append('<li><div style="position: relative;"><a href="" ><img data-id="'+ shoprow.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; height: auto;" src="' + shoprow.featured_image + '"/><div style="position: absolute;top: 5px; right:5px;"><a href="" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-myicon ui-btn-icon-notext" data-transition="slide">Like</a><a href="tel:'+shoprow.additional_information.telephone+'" class="ui-btn ui-btn-b ui-btn-inline ui-corner-all ui-icon-phone ui-btn-icon-notext" data-transition="slide">Call</a></div><div style="color:white; position: absolute;left: 10px;bottom: 5px; width: 100%">'+shoprow.title+'</div></div><div style="background-color: #FBF8F8; padding:5px;" class="ui-content"><p>'+shoprow.additional_information.map.address+'</p></div></li>');
 					}
 				}catch(e){}
@@ -404,20 +402,20 @@ $(document).on('pageshow', '#shop', function(){
 <body>
 <div data-role="page" id="firstPage" data-url="firstPage" style="background-image: url('img/background.png');">
     <div role="main" id="firstPageBody">
-	  <div style="position: relative; top: 100px;">
-		<img src="GaadiGallery.png" id="logo" style="margin:5px auto; height:180px; width:180px; top: 100px; display:block;"></img>
+	  <div style="position: relative; margin:0 auto;display: block;top: 150px;">
+		<img src="GaadiGallery.png" id="logo" style="margin:0 auto; height:130px; width:130px; display:block;"></img>
 		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><h3>Gaadi Gallery</h3><h4>DISCOVER BANGALORE CITY</h4></div>
 		<img src="img/55.gif" style="margin:0px auto;display:block;"></img>
 	  </div>	
     </div>
 </div>	
 <div data-role="page" id="map-page" data-url="map-page" data-dom-cache="true" style="overflow-y:hidden;">
-	<div data-role="panel" id="myPanel1" style="color: #29b0e2" data-display="overlay"> 
+	<div data-role="panel" id="myPanel" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
 			<li style="color: #29b0e2">Home</li>
 			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
@@ -427,7 +425,7 @@ $(document).on('pageshow', '#shop', function(){
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<a href="#myPanel" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
     </div>
     <div role="main" class="ui-content" id="map-canvas">
@@ -437,12 +435,12 @@ $(document).on('pageshow', '#shop', function(){
 </div>
 
 <div data-role="page" id="list-category" data-url="list-category" data-dom-cache="true">
-	<div data-theme="a" data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+	<div data-theme="a" data-role="panel" id="myPanel5" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li style="color: #29b0e2">Home</li>
-			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#map-page">Home</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
@@ -451,7 +449,7 @@ $(document).on('pageshow', '#shop', function(){
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<a href="#myPanel5" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
@@ -536,12 +534,12 @@ $(document).on('pageshow', '#shop', function(){
 </div>
 
 <div data-role="page" id="category-shop" data-url="category-shop" data-dom-cache="true">
-	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
+	<div data-role="panel" id="myPanel4" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li style="color: #29b0e2">Home</li>
-			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#map-page">Home</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
@@ -550,7 +548,7 @@ $(document).on('pageshow', '#shop', function(){
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<a href="#myPanel4" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
@@ -648,9 +646,9 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li style="color: #29b0e2">Home</li>
-			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#map-page">Home</a></li>
+			<li style="color: #29b0e2">Category</li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
@@ -750,21 +748,21 @@ $(document).on('pageshow', '#shop', function(){
     </div>
 </div>
 <div data-role="page" id="AboutUs" style="background-color:white;" data-url="AboutUs">
-	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
+	<div data-role="panel" id="myPanel1" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li style="color: #29b0e2">Home</li>
+			<li><a href="#map-page">Home</a></li>
 			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<li style="color: #29b0e2">About Us</li>
 			<li><a href="#">Log in</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
@@ -779,12 +777,12 @@ $(document).on('pageshow', '#shop', function(){
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
 		<ul data-role="listview">
-			<li style="color: #29b0e2">Home</li>
+			<li><a href="#map-page">Home</a></li>
 			<li><a href="#list-category">Category</a></li>
-			<li><a href="#">Services</a></li>
+			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
-			<li><a href="#ContactUs">Contact Us</a></li>
+			<li style="color: #29b0e2">Contact Us</li>
 			<li><a href="#AboutUs">About Us</a></li>
 			<li><a href="#">Log in</a></li>
 		</ul>
@@ -797,6 +795,136 @@ $(document).on('pageshow', '#shop', function(){
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
 		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="contact"></h3>
+    </div>
+	
+</div>
+
+<div data-role="page" style="background-color:white;" id="ServicePage" data-url="ServicePage">
+	<div data-role="panel" id="myPanel6" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#list-category">Category</a></li>
+			<li style="color: #29b0e2">Services</li>
+			<li><a href="#">Magazine</a></li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
+			<li><a href="#">Log in</a></li>
+		</ul>
+	</div>
+    <div data-role="header" data-theme="b" data-position="fixed">
+		<a href="#myPanel6" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
+		<div id="fbuilder_2">
+      <div id="formheader_2"><div class="fform" id="field"><h3>Gaadi Gallery Services</h3><span></span></div></div>
+      <div id="fieldlist_2" class="top_aligned">
+		<div class="pb0 pbreak" page="0">
+			<div class="fields  section_breaks" id="field_2-0">
+				<div class="section_break" id="fieldname5_2"></div>
+				<label></label><span class="uh"></span>
+				<div class="clearer"></div>
+			</div>
+			<div class="fields " id="field_2-1">
+				<div id="fieldname14_2">
+					<div class="fields  column2" id="field_2-14" style="clear: left;">
+						<label for="fieldname11_2">Select a Choice<span class="r">*</span></label>
+						<div class="dfield">
+							<select id="fieldname11_2" name="fieldname11_2" class="field medium required valid">
+								<option value="2 Wheel Vehicles" vt="2 Wheel Vehicles">2 Wheel Vehicles</option>
+								<option value="4 Wheel Vehicles" vt="4 Wheel Vehicles">4 Wheel Vehicles</option>
+							</select>
+							<span class="uh"></span>
+						</div>
+						<div class="clearer"></div>
+						<div class="clearer"></div>
+					</div>
+					<div class="fields  column2" id="field_2-15">
+						<label for="fieldname24_2">Time Slot<span class="r">*</span> <span class="dformat">(dd/mm/yyyy HH:mm)</span></label>
+						<div class="dfield">
+							<input id="fieldname24_2_date" name="fieldname24_2_date" class="field dateddmmyyyy medium required hasDatepicker valid" type="text" value="">
+							<select id="fieldname24_2_hours" name="fieldname24_2_hours" class="valid">
+								<option value="00">00</option>
+								<option value="01">01</option>
+								<option value="02">02</option>
+								<option value="03">03</option>
+								<option value="04">04</option>
+								<option value="05">05</option>
+								<option value="06">06</option>
+								<option value="07">07</option>
+								<option value="08">08</option>
+								<option value="09">09</option>
+								<option value="10">10</option>
+								<option value="11">11</option>
+								<option value="12">12</option>
+								<option value="13">13</option>
+								<option value="14">14</option>
+								<option value="15">15</option>
+								<option value="16">16</option>
+								<option value="17">17</option>
+								<option value="18">18</option>
+								<option value="19">19</option>
+								<option value="20">20</option>
+								<option value="21">21</option>
+								<option value="22">22</option>
+								<option value="23">23</option>
+							</select>
+							<select id="fieldname24_2_minutes" name="fieldname24_2_minutes">
+								<option value="00">00</option><option value="01">01</option><option value="02">02</option><option value="03">03</option><option value="04">04</option><option value="05">05</option><option value="06">06</option><option value="07">07</option><option value="08">08</option><option value="09">09</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option><option value="23">23</option><option value="24">24</option><option value="25">25</option><option value="26">26</option><option value="27">27</option><option value="28">28</option><option value="29">29</option><option value="30">30</option><option value="31">31</option><option value="32">32</option><option value="33">33</option><option value="34">34</option><option value="35">35</option><option value="36">36</option><option value="37">37</option><option value="38">38</option><option value="39">39</option><option value="40">40</option><option value="41">41</option><option value="42">42</option><option value="43">43</option><option value="44">44</option><option value="45">45</option><option value="46">46</option><option value="47">47</option><option value="48">48</option><option value="49">49</option><option value="50">50</option><option value="51">51</option><option value="52">52</option><option value="53">53</option><option value="54">54</option><option value="55">55</option><option value="56">56</option><option value="57">57</option><option value="58">58</option><option value="59">59</option>
+							</select> 
+							<span class="uh"></span>
+						</div>
+						<div class="clearer"></div>
+					</div>
+				</div>
+				<div class="clearer"></div>
+			</div>
+			<div class="fields " id="field_2-3">
+				<label>Engine Oil Change</label>
+				<div class="dfield">
+					<div class="three_column">
+						<label><input name="fieldname8_2[]" id="fieldname8_2" class="field  group valid" value="Yes : 100" vt="Yes" type="checkbox"> Yes</label>
+					</div>
+					<div class="three_column">
+						<label><input name="fieldname8_2[]" id="fieldname8_2" class="field  group " value="0" vt="No" type="checkbox"> No</label>
+					</div>
+					<div class="three_column">
+						<label><input name="fieldname8_2[]" id="fieldname8_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label>
+					</div>
+					<span class="uh"></span>
+				</div>
+				<div class="clearer"></div>
+			</div>
+			<div class="fields " id="field_2-4">
+				<label>Break pads</label>
+				<div class="dfield">
+					<div class="three_column">
+						<label><input name="fieldname10_2[]" id="fieldname10_2" class="field  group valid" value="100" vt="Yes" type="checkbox"> Yes</label>
+					</div>
+				<div class="three_column">
+					<label><input name="fieldname10_2[]" id="fieldname10_2" class="field  group " value="0" vt="No" type="checkbox"> No</label>
+				</div>
+				<div class="three_column">
+					<label><input name="fieldname10_2[]" id="fieldname10_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label>
+				</div>
+				<span class="uh"></span>
+			</div>
+			<div class="clearer"></div>
+		</div>
+		<div class="fields " id="field_2-5">
+			<label>Air Filter</label>
+			<div class="dfield">
+				<div class="three_column">
+					<label><input name="fieldname15_2[]" id="fieldname15_2" class="field  group valid" value="100" vt="Yes" type="checkbox"> Yes</label>
+				</div>
+			<div class="three_column">
+				<label><input name="fieldname15_2[]" id="fieldname15_2" class="field  group " value="0" vt="No" type="checkbox"> No</label>
+			</div><div class="three_column"><label><input name="fieldname15_2[]" id="fieldname15_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-6"><label>Spare plug</label><div class="dfield"><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-7"><label>Exelecator Wiles</label><div class="dfield"><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-8"><label>Carborator</label><div class="dfield"><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-9"><label>Packet Rubr</label><div class="dfield"><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-10"><label>Spractoin</label><div class="dfield"><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-11"><label>Cain Spret</label><div class="dfield"><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group valid" value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-12"><label>Chain</label><div class="dfield"><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-13" style=""><label>Total Amount</label><div class="dfield"><input id="fieldname9_2" name="fieldname9_2" class="codepeoplecalculatedfield field large valid" type="text" value="" dep="" notdep=""><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-16" uh="Add To Cart"><input id="fieldname26_2" type="button" value="button" class="field valid" onclick=""><span class="uh" style="display: none;">Add To Cart</span><div class="clearer"></div></div></div></div>
+  </div>
+		
     </div>
 	
 </div>
