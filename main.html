@@ -292,7 +292,7 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		var decoded2 = elem.value;
 		
         if(decoded1 == decoded2) {
-			$('#Cate').append('<h3 style="color: #29b0e2">CATEGORY: ' +row.name+'</h3>');
+			$('#Cate').append('<p style="font-size: 14px;font-weight: bold; color: #29b0e2">CATEGORY: ' +row.name+'</p>');
 			$.each(row.shops, function(j, shoprow) {
 				//console.log(shoprow);
 				try{ 
@@ -413,9 +413,14 @@ $(document).on('pageshow', '#shop', function(){
 function myFunction(){
 $('#search-cate').fadeIn();
 }
+
+function myFunction2(){
+$('#search-cate').fadeOut();
+}
 </script>
 </head>
 <body>
+<!-- Welcome Page -->
 <div data-role="page" id="firstPage" data-url="firstPage" style="background-image: url('img/background.png');">
     <div role="main" id="firstPageBody">
 	  <div style="position: relative; margin:0 auto;display: block;top: 150px;">
@@ -425,6 +430,7 @@ $('#search-cate').fadeIn();
 	  </div>	
     </div>
 </div>
+ 
  <!-- Login page -->
 <div data-role="page" id="SignIn">
 	<div data-role="header" data-theme="b">
@@ -457,6 +463,7 @@ $('#search-cate').fadeIn();
 		</form>
 	</div>
 </div>
+ 
  <!-- Forgot Password page -->
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
@@ -473,6 +480,7 @@ $('#search-cate').fadeIn();
 		</form>
 	</div>
 </div>
+ 
  <!-- Register Page -->
 <div data-role="page" id="SignUp">
 	<div data-role="header" data-theme="b">
@@ -504,6 +512,7 @@ $('#search-cate').fadeIn();
 		</form>
 	</div>
 </div>
+ 
  <!-- Map Page -->	
 <div data-role="page" id="map-page" data-url="map-page" data-dom-cache="true" style="overflow-y:hidden;">
 	<div data-role="panel" id="myPanel" style="color: #29b0e2" data-display="overlay"> 
@@ -531,16 +540,19 @@ $('#search-cate').fadeIn();
 		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #29b0e2; background-color: rgba(0,0,0,0.1)">
 			<b><label for="search" style="text-align:center; font-size: 1.3em; color: #29b0e2;">DISCOVER BANGALORE CITY</label></b>
 			<form class="ui-filterable">
-				<div class="ui-block-a" style="width:65%;"><input id="search1" data-type="search" placeholder="Search..."></div>
+				<div class="ui-block-a" style="width:65%;"><input id="search1" data-type="search" placeholder="Search..." onfocus="myFunction2()"></div>
 				<div class="ui-block-b" style="width:35%;"><a href="" onclick="myFunction()" class="ui-btn ui-btn-b">Search</a></div>
 			</form>
-			<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
-			  
-			</ul>
+			<div style="max-height: 180px;" class="ui-content">
+				<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
+				  
+				</ul>
+			</div>
 		</div>
 	</div>
-	<div style="text-align: center; position: relative; bottom: 15%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
+	<div style="text-align: center; position: relative; bottom: 12%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
 </div>
+ 
  <!-- Category Page -->
 <div data-role="page" id="list-category" data-url="list-category" data-dom-cache="true">
 	<div data-theme="a" data-role="panel" id="myPanel5" style="color: #29b0e2" data-display="overlay"> 
@@ -640,6 +652,7 @@ $('#search-cate').fadeIn();
     </div>
 	
 </div>
+ 
  <!-- Shop List Page -->
 <div data-role="page" id="category-shop" data-url="category-shop" data-dom-cache="true">
 	<div data-role="panel" id="myPanel4" style="color: #29b0e2" data-display="overlay"> 
@@ -742,7 +755,7 @@ $('#search-cate').fadeIn();
 			</div>
 		</div>
 		<form class="ui-filterable">
-			<div style="padding-left:10px;padding-right:10px"><input id="myFilter1" data-type="search" placeholder="Search Shop..."></div
+			<div style="padding-left:10px;padding-right:10px"><input id="myFilter1" data-type="search" placeholder="Search Shop..."></div>
 		</form>
 		<div style="padding-left:10px;"><p id="Cate"></p></div>
 		<ul data-role="listview" id="shopsList" data-filter="true" data-input="#myFilter1" data-inset="false">
@@ -750,6 +763,7 @@ $('#search-cate').fadeIn();
 		</ul>
     </div>
 </div>
+ 
  <!-- Shop Detail Page -->
 <div data-role="page" id="shop" data-url="shop" data-dom-cache="true">
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
@@ -856,6 +870,8 @@ $('#search-cate').fadeIn();
 		</ul>
     </div>
 </div>
+ 
+ <!-- About Us Page -->
 <div data-role="page" id="AboutUs" style="background-color:white;" data-url="AboutUs">
 	<div data-role="panel" id="myPanel1" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -881,6 +897,7 @@ $('#search-cate').fadeIn();
     </div>
 	
 </div>
+ 
  <!-- Contact Us Page -->
 <div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
@@ -907,6 +924,7 @@ $('#search-cate').fadeIn();
     </div>
 	
 </div>
+ 
  <!-- Service Page -->
 <div data-role="page" style="background-color:white;" id="ServicePage" data-url="ServicePage">
 	<div data-role="panel" id="myPanel6" style="color: #29b0e2" data-display="overlay"> 
