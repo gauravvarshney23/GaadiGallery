@@ -37,18 +37,20 @@ background-color: white;
     width: 50px;
 }
 .thumbContainer img {
-    position: relative;
-    margin: auto;
-	padding: 10px;
-    bottom: 0; left: 0; top: 0; right: 0;
-    width: 40px;
+    bottom: 0;
     height: 40px;
+    left: 10px;
+    position: absolute;
+    right: 0;
+    top: 7px;
+    width: 40px;
 }
 
 .ui-icon-myicon:after {
 background-image: url("img/like.png");
 background-size: 18px 18px;
 }
+
 </style>
   <style>
         
@@ -126,7 +128,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			 $.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
+			 $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
         },
         error: function (request,error) {
             alert('Network error has occurred please try again!');
@@ -135,6 +137,7 @@ $(document).on('pageshow', '#firstPage', function(e, data){
 });
 
 $(document).on('pageshow', '#map-page', function() {
+	$('#search-cate').fadeOut();
 	defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
 	if ( navigator.geolocation ) {
         function success(pos) {
@@ -143,9 +146,7 @@ $(document).on('pageshow', '#map-page', function() {
             drawMap(defaultLatLng);
         }
         function fail(error) {
-			//if(error.code == 1)
-				alert(error.code);
-			//console.log(error.code);
+			alert(error.message);
             drawMap(defaultLatLng);  // Failed to find location, show default map
         }
         // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
@@ -166,7 +167,11 @@ $(document).on('pageshow', '#map-page', function() {
 						title: "I am here"
 					});
         // Add an overlay to the map of current lat/lng
+		$('#search-cate').empty();
 		$.each(listCat.result, function(i, row) {
+			if(row.count > 0) {
+				$('#search-cate').append('<li><a href="" data-id="'+ row.name +'"><p style="font-size: 11px;font-weight: bold;">'+ row.name + '</p></a></li>');
+			}
 			$.each(row.shops, function(j, shoprow) {
 				//if(row.name == "Computer Shop")
 				try{
@@ -189,6 +194,10 @@ $(document).on('pageshow', '#map-page', function() {
 			});
 		});
     }	
+});
+$(document).on('vclick', '#search-cate li a', function(){  
+    listCat.name = $(this).attr('data-id');
+    $.mobile.changePage("#category-shop", { transition: "slide", changeHash: true});
 });
 
 $(document).on('pagebeforeshow', '#AboutUs', function(e, data){ 
@@ -400,6 +409,10 @@ $(document).on('pageshow', '#shop', function(){
         }
     });
 });
+
+function myFunction(){
+$('#search-cate').fadeIn();
+}
 </script>
 </head>
 <body>
@@ -411,7 +424,87 @@ $(document).on('pageshow', '#shop', function(){
 		<img src="img/55.gif" style="margin:0px auto;display:block;"></img>
 	  </div>	
     </div>
-</div>	
+</div>
+ <!-- Login page -->
+<div data-role="page" id="SignIn">
+	<div data-role="header" data-theme="b">
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+	</div>
+	<div data-role="navbar" data-theme="b">
+			<ul>
+				<li><a href="#SignIn" class="ui-btn-active ui-state-persist" data-icon="carat-d">Sign in</a></li>
+				<li><a href="#SignUp" data-icon="carat-u">Sign up</a></li>
+			</ul>
+	</div>
+	<div data-role="main" class="ui-content">
+		<form name="form1" id="form1" method="post">
+			<label for="Uname">User Name:</label>
+			<input type="text" name="Uname" id="Uname" title="Enter your user id" placeholder="Enter user name..." required>
+			<label for="Passw">Password:</label>
+			<input type="password" name="Passw" id="Passw" title="Enter your password" placeholder="Enter password..." required>
+			
+			<div style="float: right;">
+				<a href="#ForgotPassword">Forgot Password</a>
+			</div>
+			<input type="button" id="f1Submit" value="Submit" data-icon="check" data-iconpos="right" data-inline="true">
+			<script>
+				$(document).ready(function(){
+					$("#f1Submit").click(function(){
+					window.location = "#map-page";
+					});
+				});
+			</script>
+		</form>
+	</div>
+</div>
+ <!-- Forgot Password page -->
+<div data-role="page" id="ForgotPassword">
+	<div data-role="header" data-theme="b">
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+	</div>
+	<div data-role="main" class="ui-content">
+		<form name="form2" id="form2" method="post" action="#">
+			<label for="Email_id">Email id:</label>
+			<input type="email" name="Email_id" id="Email_id" title="Enter your email id" placeholder="Enter email id" required>
+			<label for="Mob_no">Mobile number:</label>
+			<input type="number" name="Mob_no" id="Mob_no" minlength="10" maxlength="10" title="Enter your mobile no." placeholder="Enter mobile no." required>
+			<input type="submit" value="Change Password" data-icon="check" data-iconpos="right" data-inline="true">
+		</form>
+	</div>
+</div>
+ <!-- Register Page -->
+<div data-role="page" id="SignUp">
+	<div data-role="header" data-theme="b">
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+	</div>
+	<div data-role="navbar">
+		<ul>
+			<li><a href="#" data-rel="back" data-icon="carat-d">Sign in</a></li>
+			<li><a href="#SignUp" class="ui-btn-active ui-state-persist" data-icon="carat-u">Sign up</a></li>
+		</ul>
+	</div>
+	<div data-role="main" class="ui-content">
+		<form method="post" action="#">
+			<label for="firstname">First name:</label>
+			<input type="text" name="firstname" id="firstname" placeholder="First name.." required>
+			<label for="lastname">Last name:</label>
+			<input type="text" name="lastname" id="lastname" placeholder="Last name.." required>
+			<label for="username">User name:</label>
+			<input type="text" name="username" id="username" placeholder="User name.." required>
+			<label for="email">E-mail:</label>
+			<input type="email" name="email" id="email" placeholder="Email.." required>
+			<label for="Mob">Mobile No:</label>
+			<input type="number" name="Mob" id="Mob" minlength="10" maxlength="10" placeholder="Mobile number.." required>
+			<label for="reg_pass">Password:</label>
+			<input type="password" name="reg_pass" id="reg_pass" minlength="8" maxlength="10" placeholder="Password.." required>
+			<label for="reg_conf_pass">Confirm Password:</label>
+			<input type="password" name="reg_conf_pass" id="reg_conf_pass" minlength="8" maxlength="10" placeholder="Confirm password.." required>
+			<input type="submit" data-inline="true" value="Submit" data-icon="check" data-iconpos="right" data-inline="true">
+		</form>
+	</div>
+</div>
+ <!-- Map Page -->	
 <div data-role="page" id="map-page" data-url="map-page" data-dom-cache="true" style="overflow-y:hidden;">
 	<div data-role="panel" id="myPanel" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -423,7 +516,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 			
 		</ul>
 	</div>
@@ -434,9 +527,21 @@ $(document).on('pageshow', '#shop', function(){
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
     </div>
-	<div style="text-align: center; position: relative; bottom: 18%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
+	<div class="ui-grid-solo">
+		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #29b0e2; background-color: rgba(0,0,0,0.1)">
+			<b><label for="search" style="text-align:center; font-size: 1.3em; color: #29b0e2;">DISCOVER BANGALORE CITY</label></b>
+			<form class="ui-filterable">
+				<div class="ui-block-a" style="width:65%;"><input id="search1" data-type="search" placeholder="Search..."></div>
+				<div class="ui-block-b" style="width:35%;"><a href="" onclick="myFunction()" class="ui-btn ui-btn-b">Search</a></div>
+			</form>
+			<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
+			  
+			</ul>
+		</div>
+	</div>
+	<div style="text-align: center; position: relative; bottom: 15%;"><a href="#list-category" id="category" class="ui-btn ui-btn-b ui-btn-inline ui-icon-grid ui-btn-icon-left" data-transition="slide" style="color: #29b0e2;">Show Category</a></div>
 </div>
-
+ <!-- Category Page -->
 <div data-role="page" id="list-category" data-url="list-category" data-dom-cache="true">
 	<div data-theme="a" data-role="panel" id="myPanel5" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -448,7 +553,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -535,7 +640,7 @@ $(document).on('pageshow', '#shop', function(){
     </div>
 	
 </div>
-
+ <!-- Shop List Page -->
 <div data-role="page" id="category-shop" data-url="category-shop" data-dom-cache="true">
 	<div data-role="panel" id="myPanel4" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -547,7 +652,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -645,6 +750,7 @@ $(document).on('pageshow', '#shop', function(){
 		</ul>
     </div>
 </div>
+ <!-- Shop Detail Page -->
 <div data-role="page" id="shop" data-url="shop" data-dom-cache="true">
 	<div data-role="panel" id="myPanel3" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -656,7 +762,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -761,7 +867,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li style="color: #29b0e2">About Us</li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -775,7 +881,7 @@ $(document).on('pageshow', '#shop', function(){
     </div>
 	
 </div>
-
+ <!-- Contact Us Page -->
 <div data-role="page" style="background-color:white;" id="ContactUs" data-url="ContactUs">
 	<div data-role="panel" id="myPanel2" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -787,7 +893,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li style="color: #29b0e2">Contact Us</li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -801,7 +907,7 @@ $(document).on('pageshow', '#shop', function(){
     </div>
 	
 </div>
-
+ <!-- Service Page -->
 <div data-role="page" style="background-color:white;" id="ServicePage" data-url="ServicePage">
 	<div data-role="panel" id="myPanel6" style="color: #29b0e2" data-display="overlay"> 
 		<h2>DISCOVER BANGALORE CITY</h2>
@@ -813,7 +919,7 @@ $(document).on('pageshow', '#shop', function(){
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#">Log in</a></li>
+			<li><a href="#SignIn">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
