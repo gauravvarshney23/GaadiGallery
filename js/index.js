@@ -38,8 +38,14 @@ var app = {
     // Update DOM on a Received Event
 };
 function backButtonCallback() {
-	alert("pressed back button");
-	navigator.notification.confirm('do you want to exit the app?',confirmCallback);
+	//alert("pressed back button");
+	if(($.mobile.activePage.is('#map-page')) || ($.mobile.activePage.is('#SignIn'))){
+           navigator.notification.confirm('Do you want to exit from app?',confirmCallback);
+       }
+       else {
+           navigator.app.backHistory();
+       }
+	
 }
 function confirmCallback(buttonIndex) {
 	if(buttonIndex == 1) {
