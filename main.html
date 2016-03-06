@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta name="format-detection" content="telephone=no" />
+<meta name="msapplication-tap-highlight" content="no" />
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="css/jquery.mobile-1.4.5.min.css" />
 <style> 
@@ -112,7 +114,13 @@ background-size: 18px 18px;
         $.mobile.hashListeningEnabled = true;
         $.mobile.pushStateEnabled = false;
 		$.mobile.allowCrossDomainPages = true;
+		$.mobile.phonegapNavigationEnabled = true;
     });
+</script>
+<script type="text/javascript" src="cordova.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<script type="text/javascript">
+	app.initialize();
 </script>
 <script src="js/jquery.mobile-1.4.5.min.js"></script>
 <script src="http://maps.google.com/maps/api/js?libraries=geometry&sensor=false"></script>
@@ -122,34 +130,6 @@ var listCat = {id : null, name : null, result : null};
 //var marker = null;
 //var map = null;
 var defaultLatLng;
-document.addEventListener("deviceready", onDeviceReady, false);
-function onDeviceReady(){
-document.addEventListener("backbutton", function(e){
-	alert("hi");
-    if($.mobile.activePage.is('#map-page')){
-        /* 
-         Event preventDefault/stopPropagation not required as adding backbutton
-          listener itself override the default behaviour. Refer below PhoneGap link.
-        */
-        //e.preventDefault();
-
-        navigator.notification.confirm(
-            "Do you want to exit the app?",
-            function (button) {
-              if (button==2) {
-                navigator.app.exitApp();
-              }
-            }
-            ,
-            "EXIT",
-            ["Cancel","OK"]
-        );
-    }
-    else {
-        navigator.app.backHistory()
-    }
-}, false);
-}
 $(document).on('pageshow', '#firstPage', function(e, data){
     $.ajax({url: "http://gaadigallery.com/api/webservices/categories/",
         dataType: "jsonp",
@@ -1083,6 +1063,5 @@ $('#search-cate').fadeOut();
     </div>
 	
 </div>
-
 </body>
 </html>
