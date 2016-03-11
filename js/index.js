@@ -43,7 +43,8 @@ function backButtonCallback() {
            navigator.notification.confirm('Do you want to exit from app?',confirmCallback);
        }
        else {
-           navigator.app.backHistory();
+           history.go(-1);
+		   navigator.app.backHistory();
        }
 	
 }

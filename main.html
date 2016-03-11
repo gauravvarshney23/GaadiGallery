@@ -81,15 +81,6 @@ background-size: 18px 18px;
         .jssorb05 .av { background-position: -67px -7px; }
         .jssorb05 .dn, .jssorb05 .dn:hover { background-position: -97px -7px; }
 
-        /* jssor slider arrow navigator skin 12 css */
-        /*
-        .jssora12l                  (normal)
-        .jssora12r                  (normal)
-        .jssora12l:hover            (normal mouseover)
-        .jssora12r:hover            (normal mouseover)
-        .jssora12l.jssora12ldn      (mousedown)
-        .jssora12r.jssora12rdn      (mousedown)
-        */
         .jssora12l, .jssora12r {
             display: block;
             position: absolute;
@@ -127,6 +118,7 @@ background-size: 18px 18px;
 <script src="js/jssor.slider.min.js"></script>
 <script>
 var listCat = {id : null, name : null, result : null};
+var magList = {id : null, name : null, result : null};
 //var marker = null;
 //var map = null;
 var defaultLatLng;
@@ -136,7 +128,12 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			 $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
+			 if(localStorage.getItem("user_id") == "gaurav"){
+				$.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
+			 }
+			 else {
+				$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
+			 }
         },
         error: function (request,error) {
             alert('Network error has occurred please try again!');
@@ -154,13 +151,14 @@ $(document).on('pageshow', '#map-page', function() {
             drawMap(defaultLatLng);
         }
         function fail(error) {
-			alert(error.message);
+			alert("GPS error message:\n"+error.message);
             drawMap(defaultLatLng);  // Failed to find location, show default map
         }
         // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
         navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000});
     } else {
-        drawMap(defaultLatLng);  // No geolocation support, show default map
+        alert("GPS error message:\n No geolocation support");
+		drawMap(defaultLatLng);  // No geolocation support, show default map
     }
     function drawMap(latlng) {
         var myOptions = {
@@ -417,13 +415,42 @@ $(document).on('pageshow', '#shop', function(){
         }
     });
 });
-
+$(document).on('pagebeforeshow', '#MagazinePage', function(e, data){
+    $.ajax({url: "http://gaadigallery.com/api/webservices/magazines/",
+        dataType: "jsonp",
+        async: true,
+        success: function (result) {
+			magList.result = JSON.parse(result);
+			$('#magazineList').empty();
+			$('#MagazineLoader').fadeOut(0, function(){
+			$.each(magList.result, function(i, row) {
+				//console.log(row);
+				try{
+					$('#magazineList').append('<li><div style="position: relative; text-align: center;"><a href="" ><img data-id="'+ row.id +'" style="margin:0px auto;padding: 0px;display:block; width:100%; max-height: 125px; " src="' + row.featured_image + '"/></a><p>'+row.title+'</p><p>$'+row._regular_price+'</p></div></li>');
+				}catch(e){}
+				
+				$('#magazineList').listview('refresh');
+			});
+			});
+        },
+        error: function (request,error) {
+            alert('Network error has occurred please try again!');
+        }
+    });
+});
 function myFunction(){
 $('#search-cate').fadeIn();
 }
 
 function myFunction2(){
 $('#search-cate').fadeOut();
+}
+
+function myFunction3(){
+$('#login_email').val("");
+$('#login_pass').val("");
+localStorage.removeItem("user_id");
+$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 }
 </script>
 </head>
@@ -451,27 +478,42 @@ $('#search-cate').fadeOut();
 			</ul>
 	</div>
 	<div data-role="main" class="ui-content">
-		<form name="form1" id="form1" method="post">
-			<label for="Uname">User Name:</label>
-			<input type="text" name="Uname" id="Uname" title="Enter your user id" placeholder="Enter user name..." required>
+		<form method="post" id="SignInForm">
+			<label for="Uname">Username:</label>
+			<input type="text" name="email" id="login_email" placeholder="Username" required>
 			<label for="Passw">Password:</label>
-			<input type="password" name="Passw" id="Passw" title="Enter your password" placeholder="Enter password..." required>
+			<input type="password" name="password" id="login_pass" placeholder="Password" required>
 			
 			<div style="float: right;">
 				<a href="#ForgotPassword">Forgot Password</a>
 			</div>
-			<input type="button" id="f1Submit" value="Submit" data-icon="check" data-iconpos="right" data-inline="true">
-			<script>
-				$(document).ready(function(){
-					$("#f1Submit").click(function(){
-					window.location = "#map-page";
-					});
-				});
-			</script>
+			<input type="submit" value="Submit" data-icon="check" data-iconpos="right" data-inline="true">
 		</form>
 	</div>
 </div>
- 
+ <script>
+				$(document).ready(function(){
+					$("#SignInForm").submit(function(){
+						var str = $( "#SignInForm" ).serialize();				        
+						$.ajax({url: "http://gaadigallery.com/api/webservices/login/",
+					        dataType: "jsonp",
+					        async: true,
+					        data: str,
+					        success: function (result) {
+								var signin = JSON.parse(result);
+								if(signin.result == 1){
+									localStorage.setItem("user_id", $('#login_email').val());
+									alert(signin.message.id);
+									window.location = "#map-page";
+								}else{
+									alert(signin.message);
+								}
+					        }
+					    });
+					    return false;
+					});
+				});
+			</script>
  <!-- Forgot Password page -->
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
@@ -479,15 +521,37 @@ $('#search-cate').fadeOut();
 		<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
 	</div>
 	<div data-role="main" class="ui-content">
-		<form name="form2" id="form2" method="post" action="#">
+		<form id="forgotPassForm">
 			<label for="Email_id">Email id:</label>
-			<input type="email" name="Email_id" id="Email_id" title="Enter your email id" placeholder="Enter email id" required>
-			<label for="Mob_no">Mobile number:</label>
-			<input type="number" name="Mob_no" id="Mob_no" minlength="10" maxlength="10" title="Enter your mobile no." placeholder="Enter mobile no." required>
-			<input type="submit" value="Change Password" data-icon="check" data-iconpos="right" data-inline="true">
+			<input type="email" name="Email_id" id="Forgot_Email_id" placeholder="Enter email id" required>
+			<input type="submit" value="Reset Password" data-icon="check" data-iconpos="right" data-inline="true">
 		</form>
 	</div>
 </div>
+<script>
+				$(document).ready(function(){
+					$("#forgotPassForm").submit(function(){
+						var email = $('#Forgot_Email_id').val();				        
+						$.ajax({url: "http://gaadigallery.com/api/webservices/forgotPass/",
+					        dataType: "jsonp",
+					        async: true,
+					        data: {emails:email},
+					        success: function (result) {
+								var forget = JSON.parse(result);
+								if(forget.result == 1){
+									$('#login_email').val(email);
+									$('#login_pass').val(forget.password);
+									alert(forget.msg);
+									window.location = "#SignIn";
+								}else{
+									alert(forget.msg);
+								}
+					        }
+					    });
+					    return false;
+					});
+				});
+			</script>
  
  <!-- Register Page -->
 <div data-role="page" id="SignUp">
@@ -501,25 +565,65 @@ $('#search-cate').fadeOut();
 		</ul>
 	</div>
 	<div data-role="main" class="ui-content">
-		<form method="post" action="#">
+		<form method="post" id="reg_form">
 			<label for="firstname">First name:</label>
-			<input type="text" name="firstname" id="firstname" placeholder="First name.." required>
+			<input type="text" name="firstname" placeholder="First name.." required>
 			<label for="lastname">Last name:</label>
-			<input type="text" name="lastname" id="lastname" placeholder="Last name.." required>
+			<input type="text" name="lastname" placeholder="Last name.." required>
 			<label for="username">User name:</label>
-			<input type="text" name="username" id="username" placeholder="User name.." required>
+			<input type="text" name="username" placeholder="User name.." required>
 			<label for="email">E-mail:</label>
-			<input type="email" name="email" id="email" placeholder="Email.." required>
-			<label for="Mob">Mobile No:</label>
-			<input type="number" name="Mob" id="Mob" minlength="10" maxlength="10" placeholder="Mobile number.." required>
+			<input type="email" name="email" placeholder="Email.." required>
 			<label for="reg_pass">Password:</label>
-			<input type="password" name="reg_pass" id="reg_pass" minlength="8" maxlength="10" placeholder="Password.." required>
+			<input type="password" name="password" id="reg_pass" minlength="8" maxlength="10" placeholder="Password.." required>
 			<label for="reg_conf_pass">Confirm Password:</label>
-			<input type="password" name="reg_conf_pass" id="reg_conf_pass" minlength="8" maxlength="10" placeholder="Confirm password.." required>
-			<input type="submit" data-inline="true" value="Submit" data-icon="check" data-iconpos="right" data-inline="true">
+			<input type="password" id="reg_conf_pass" minlength="8" maxlength="10" placeholder="Confirm password.." required>
+			<label for="captcha"><span id="captcha1"></span> + <span id="captcha2"></span> =</label>
+			<input type="number" maxlength="10" id="captcha_ans" placeholder="Captcha Answer" required>
+			<input type="submit" data-inline="true" value="Register" data-icon="check" data-iconpos="right" data-inline="true">
 		</form>
 	</div>
 </div>
+<script>
+				$(document).ready(function(){
+					var captcha1 = Math.floor((Math.random() * 100) + 1); 
+					$('#captcha1').text(captcha1);
+					var captcha2 = Math.floor((Math.random() * 100) + 11); 
+					$('#captcha2').text(captcha2);
+					var captchaAns = parseInt(captcha1) + parseInt(captcha2);
+					$("#reg_form").submit(function(){
+						if($('#reg_pass').val() != $('#reg_conf_pass').val()){
+							alert('Password and Confirm Password does not match.');
+							return false;
+						}
+						if($('#captcha_ans').val() != captchaAns){
+							alert('Wrong Captcha Answer');
+							return false;
+						}
+						//window.location = "#map-page";
+						var str = $( "#reg_form" ).serialize();
+				        $.ajax({url: "http://gaadigallery.com/api/webservices/registration/",
+					        dataType: "jsonp",
+					        async: true,
+					        type: "POST",
+					        data: str,
+					        success: function (result) {
+								var signup = JSON.parse(result);
+								if(signup.reg == 1){
+									alert(signup.id);
+									window.location = "#map-page";
+								}else{
+									alert(signup.msg);
+								}
+					        },
+					        error: function (request,error) {
+					            alert('Network error has occurred please try again!');
+					        }
+					    });
+					    return false;
+					});
+				});
+			</script>
  
  <!-- Map Page -->	
 <div data-role="page" id="map-page" data-url="map-page" data-dom-cache="true" style="overflow-y:hidden;">
@@ -529,11 +633,11 @@ $('#search-cate').fadeOut();
 			<li style="color: #29b0e2">Home</li>
 			<li><a href="#list-category">Category</a></li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 			
 		</ul>
 	</div>
@@ -569,11 +673,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li style="color: #29b0e2">Category</li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -669,11 +773,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li style="color: #29b0e2">Category</li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -780,11 +884,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li style="color: #29b0e2">Category</li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -887,11 +991,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li><a href="#list-category">Category</a></li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li style="color: #29b0e2">About Us</li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -914,11 +1018,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li><a href="#list-category">Category</a></li>
 			<li><a href="#ServicePage">Services</a></li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li style="color: #29b0e2">Contact Us</li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -941,11 +1045,11 @@ $('#search-cate').fadeOut();
 			<li><a href="#map-page">Home</a></li>
 			<li><a href="#list-category">Category</a></li>
 			<li style="color: #29b0e2">Services</li>
-			<li><a href="#">Magazine</a></li>
+			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="#AboutUs">About Us</a></li>
-			<li><a href="#SignIn">Sign out</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
@@ -1060,6 +1164,100 @@ $('#search-cate').fadeOut();
 			</div><div class="three_column"><label><input name="fieldname15_2[]" id="fieldname15_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-6"><label>Spare plug</label><div class="dfield"><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname16_2[]" id="fieldname16_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-7"><label>Exelecator Wiles</label><div class="dfield"><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname17_2[]" id="fieldname17_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-8"><label>Carborator</label><div class="dfield"><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname18_2[]" id="fieldname18_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-9"><label>Packet Rubr</label><div class="dfield"><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname19_2[]" id="fieldname19_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-10"><label>Spractoin</label><div class="dfield"><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname20_2[]" id="fieldname20_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-11"><label>Cain Spret</label><div class="dfield"><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group valid" value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname21_2[]" id="fieldname21_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-12"><label>Chain</label><div class="dfield"><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="100" vt="Yes" type="checkbox"> Yes</label></div><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="0" vt="No" type="checkbox"> No</label></div><div class="three_column"><label><input name="fieldname22_2[]" id="fieldname22_2" class="field  group " value="0" vt="May Be" type="checkbox"> May Be</label></div><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-13" style=""><label>Total Amount</label><div class="dfield"><input id="fieldname9_2" name="fieldname9_2" class="codepeoplecalculatedfield field large valid" type="text" value="" dep="" notdep=""><span class="uh"></span></div><div class="clearer"></div></div><div class="fields " id="field_2-16" uh="Add To Cart"><input id="fieldname26_2" type="button" value="button" class="field valid" onclick=""><span class="uh" style="display: none;">Add To Cart</span><div class="clearer"></div></div></div></div>
   </div>
 		
+    </div>
+	
+</div>
+
+<!-- Magazine Page -->
+<div data-role="page" style="background-color:white;" id="MagazinePage" data-url="MagazinePage">
+	<div data-role="panel" id="myPanel7" style="color: #29b0e2" data-display="overlay"> 
+		<h2>DISCOVER BANGALORE CITY</h2>
+		<ul data-role="listview">
+			<li><a href="#map-page">Home</a></li>
+			<li><a href="#list-category">Category</a></li>
+			<li><a href="#ServicePage">Services</a></li>
+			<li style="color: #29b0e2">Magazine</li>
+			<li><a href="#">Offer Zone</a></li>
+			<li><a href="#ContactUs">Contact Us</a></li>
+			<li><a href="#AboutUs">About Us</a></li>
+			<li><a href="" onclick="myFunction3()">Sign out</a></li>
+		</ul>
+	</div>
+    <div data-role="header" data-theme="b" data-position="fixed">
+		<a href="#myPanel7" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>
+    <div role="main" style="background-color:white;">
+	<script>
+        jssor_3_slider_init = function() {
+            var jssor_3_SlideshowTransitions = [
+              {$Duration:1200,$Opacity:2}
+            ];
+            var jssor_3_options = {
+              $AutoPlay: true,
+              $SlideshowOptions: {
+                $Class: $JssorSlideshowRunner$,
+                $Transitions: jssor_3_SlideshowTransitions,
+                $TransitionsOrder: 1
+              },
+              $ArrowNavigatorOptions: {
+                $Class: $JssorArrowNavigator$
+              },
+              $BulletNavigatorOptions: {
+                $Class: $JssorBulletNavigator$
+              }
+            };
+            var jssor_3_slider = new $JssorSlider$("jssor_3", jssor_3_options);
+            //responsive code begin
+            //you can remove responsive code if you don't want the slider scales while window resizing
+            function ScaleSlider() {
+                var refSize = jssor_3_slider.$Elmt.parentNode.clientWidth;
+                if (refSize) {
+                    refSize = Math.min(refSize, 600);
+                    jssor_3_slider.$ScaleWidth(refSize);
+                }
+                else {
+                    window.setTimeout(ScaleSlider, 30);
+                }
+            }
+            ScaleSlider();
+            $Jssor$.$AddEvent(window, "load", ScaleSlider);
+            $Jssor$.$AddEvent(window, "resize", ScaleSlider);
+            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
+            //responsive code end
+        };
+    </script>
+    <div id="jssor_3" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
+        <!-- Loading Screen -->
+        <div data-u="loading" style="position: absolute; top: 0px; left: 0px;">
+            <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block; top: 0px; left: 0px; width: 100%; height: 100%;"></div>
+            <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
+        </div>
+        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/05.jpg" />
+            </div>
+            <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/03.jpg" />
+            </div>
+        </div>
+        <!-- Bullet Navigator -->
+        <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
+            <!-- bullet navigator item prototype -->
+            <div data-u="prototype" style="width:16px;height:16px;"></div>
+        </div>
+        <!-- Arrow Navigator -->
+        <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
+        <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
+    </div>
+    <script>
+        jssor_3_slider_init();
+    </script>
+		<img src="img/Preloader.gif" id="MagazineLoader" style="margin:20px auto;display:block;"></img>
+		<ul data-role="listview" id="magazineList" data-inset="false" class="ui-listview">
+		  
+		</ul>
     </div>
 	
 </div>
