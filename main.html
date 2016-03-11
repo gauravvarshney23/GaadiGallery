@@ -128,11 +128,26 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         async: true,
         success: function (result) {
 			listCat.result = JSON.parse(result);
-			 if(localStorage.getItem("user_id") == "gaurav"){
-				$.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
+			 if(localStorage.getItem("user_id") == null){
+			 	$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			 }
 			 else {
-				$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
+				$.ajax({url: "http://gaadigallery.com/api/webservices/checkUser/",
+					dataType: "jsonp",
+					async: true,
+					data: {id:localStorage.getItem("user_id")},
+					success: function (result) {
+						var userId = JSON.parse(result);
+						if(userId.reg == 1){
+							$.mobile.changePage("#map-page", { transition: "slide", changeHash: true});
+						}else{
+							$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
+						}
+					},
+					error: function (request,error) {
+						alert('Network error has occurred please try again!');
+					}
+			    });
 			 }
         },
         error: function (request,error) {
@@ -447,10 +462,8 @@ $('#search-cate').fadeOut();
 }
 
 function myFunction3(){
-$('#login_email').val("");
-$('#login_pass').val("");
-localStorage.removeItem("user_id");
-$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
+	localStorage.removeItem("user_id");
+	$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 }
 </script>
 </head>
@@ -502,8 +515,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 					        success: function (result) {
 								var signin = JSON.parse(result);
 								if(signin.result == 1){
-									localStorage.setItem("user_id", $('#login_email').val());
-									alert(signin.message.id);
+									localStorage.setItem("user_id", signin.message.id);
 									window.location = "#map-page";
 								}else{
 									alert(signin.message);
@@ -636,7 +648,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<!--<li><a href="#AboutUs">About Us</a></li> --> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 			
 		</ul>
@@ -676,7 +688,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
@@ -776,7 +788,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
@@ -887,7 +899,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
@@ -1021,7 +1033,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li style="color: #29b0e2">Contact Us</li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
@@ -1048,7 +1060,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li><a href="#MagazinePage">Magazine</a></li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
@@ -1179,7 +1191,7 @@ $.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 			<li style="color: #29b0e2">Magazine</li>
 			<li><a href="#">Offer Zone</a></li>
 			<li><a href="#ContactUs">Contact Us</a></li>
-			<li><a href="#AboutUs">About Us</a></li>
+			<!--<li><a href="#AboutUs">About Us</a></li> -->
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
