@@ -463,19 +463,25 @@ $(document).on('pagebeforeshow', '#MagazinePage', function(e, data){
     });
 });
 function like(shopid){
-	var likeValue = $('#likeA').text(likeValue)
+	var likeValue = $('#likeA').text();
+	console.log(likeValue);
 	var shopLike;
 	if(localStorage.getItem("shopLikeStorage") == null){
 		shopLike = new Array();
+		console.log("not visited");
 	}else{
 		shopLike = JSON.parse(localStorage["shopLikeStorage"]);
+		console.log("visited");
 	}
 	var todo;
 	if(shopLike[shopid] == null || shopLike[shopid] == 0){
 		todo = 'inc';
+		shopLike[shopid] = 1;
+		console.log("increase the like");	
 	}else{
 		todo = 'dec';
 		shopLike[shopid] = 0;
+		console.log("decrease the like");	
 	}
 	$.ajax({url: "http://gaadigallery.com/api/webservices/increaseLike/",
 			dataType: "jsonp",
@@ -485,19 +491,22 @@ function like(shopid){
 				var ajaxlike = JSON.parse(result);
 				console.log(ajaxlike);
 				if(ajaxlike.result == 1){
-					shopLike[shopid] = 1;
 					localStorage["shopLikeStorage"] = JSON.stringify(shopLike);
-					if(todo == 'inc')
+					if(todo == 'inc'){
+						console.log("increase the like 1");
 						likeValue = parseInt(likeValue) + 1;
-					else
+					}	
+					else{
+						console.log("decrease the like 1");	
 						likeValue = parseInt(likeValue) - 1;
+					}	
 					$('#likeA').text(likeValue);
 				}
 			}
 		});
 }
 function dislike(shopid){
-	var dislikeValue = $('#dislikeA').text(dislikeValue);
+	var dislikeValue = $('#dislikeA').text();
 	var shopDisLike;
 	if(localStorage.getItem("shopDisLikeStorage") == null){
 		shopDisLike = new Array();
@@ -507,6 +516,7 @@ function dislike(shopid){
 	var todo;
 	if(shopDisLike[shopid] == null || shopDisLike[shopid] == 0){
 		todo = 'inc';
+		shopDisLike[shopid] = 1;
 	}else{
 		todo = 'dec';
 		shopDisLike[shopid] = 0;
@@ -518,12 +528,13 @@ function dislike(shopid){
 			success: function (result) {
 				var ajaxDislike = JSON.parse(result);
 				if(ajaxDislike.result == 1){
-					shopDisLike[shopid] = 1;
 					localStorage["shopDisLikeStorage"] = JSON.stringify(shopDisLike);
-					if(todo == 'inc')
+					if(todo == 'inc'){
 						dislikeValue = parseInt(dislikeValue) + 1;
-					else
+					}
+					else{
 						dislikeValue = parseInt(dislikeValue) - 1;
+					}	
 					$('#dislikeA').text(dislikeValue);
 				}
 			}
@@ -539,6 +550,8 @@ $('#search-cate').fadeOut();
 
 function myFunction3(){
 	localStorage.removeItem("user_id");
+	localStorage.removeItem("shopLikeStorage");
+	localStorage.removeItem("shopDisLikeStorage");
 	$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 }
 </script>
