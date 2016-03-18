@@ -11,14 +11,14 @@
 	padding: 0 !important;
 }
 .ui-bar-b{
-	background-color: rgba(101, 193, 226, 0.5); margin: 2px auto; width: 98%; border: 2px solid #82A1C1; border-radius: 25px; text-align: center;
+	background-color: rgba(101, 193, 226, 0.7); 
+	/*margin: 2px auto; 
+	width: 98%; */
+	border-bottom: 3px solid #82A1C1; 
+	/*border-radius: 25px; */
+	text-align: center;
 }
 
-.ui-body-f {
-font-weight: bold;
-padding: 0;
-background-color: white;
-}
 .tr-head {
     border-bottom: 1px solid #29b0e2;
     background: rgba(101, 193, 226, 0.5);
@@ -47,17 +47,14 @@ background-color: white;
     top: 7px;
     width: 40px;
 }
-
 .ui-icon-myicon:after {
 background-image: url("img/like.png");
 background-size: 20px 20px;
 }
-
 .ui-icon-myicon1:after {
 background-image: url("img/disLike.png");
 background-size: 35px 35px;
 }
-
 </style>
   <style>
         .jssorb05 {
@@ -151,22 +148,24 @@ $(document).on('pageshow', '#firstPage', function(e, data){
         }
     });
 });
-
+var watchID;
 $(document).on('pageshow', '#map-page', function() {
-	$('#search-cate').fadeOut();
+	$('#search-cate').fadeOut(0);
 	defaultLatLng = new google.maps.LatLng(12.966667, 77.566667);  // Default to Banglore City in India
 	if ( navigator.geolocation ) {
         function success(pos) {
             // Location found, show map with these coordinates
 			defaultLatLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
             drawMap(defaultLatLng);
+			$('#search-cate').fadeOut(0);
         }
         function fail(error) {
 			alert("GPS error message:\n"+error.message);
             drawMap(defaultLatLng);  // Failed to find location, show default map
+			$('#search-cate').fadeOut(0);
         }
-        // Find the users current position.  Cache the location for 5 minutes, timeout after 6 seconds
-		setInterval(function(){ navigator.geolocation.getCurrentPosition(success, fail, {maximumAge: 500000, enableHighAccuracy:true, timeout: 6000}); }, 5000);
+        // Watch the users position.  
+		navigator.geolocation.watchPosition(success, fail, {enableHighAccuracy: true});
     } else {
         alert("GPS error message:\n No geolocation support");
 		drawMap(defaultLatLng);  // No geolocation support, show default map
@@ -192,7 +191,7 @@ $(document).on('pageshow', '#map-page', function() {
 			$.each(row.shops, function(j, shoprow) {
 				//if(row.name == "Computer Shop")
 				try{
-					var msgDisplay = "Category:- " + row.name + " || Shop:- " + shoprow.title;
+					var msgDisplay = "<h4>Category: " + row.name + "</h4><h4>Shop: " + shoprow.title + "</h4>";
 					var loc1 = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
 					var marker2 = new google.maps.Marker({
 						position: loc1,
@@ -395,42 +394,59 @@ $(document).on('pageshow', '#shop', function(){
 								center: loc,
 								mapTypeId: google.maps.MapTypeId.ROADMAP
 						};
-						var map1 = new google.maps.Map(document.getElementById("displayMap"), myOptions1);
-//========= set inrval for map ======================
-						setInterval(function(){
-							var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
-							distance = distance.toFixed(2);
-							$('#shopDistance').html(distance);
-							$('#displayDist').html("Far Away(in KM): "+distance);
-							var directionsService = new google.maps.DirectionsService();
-							var directionsRequest = {
-								origin: defaultLatLng,
-								destination: loc,
-								travelMode: google.maps.DirectionsTravelMode.DRIVING,
-								unitSystem: google.maps.UnitSystem.METRIC
-							};
-							var polylineOptionsActual = new google.maps.Polyline({
-							strokeColor: '#FF0000',
-							strokeOpacity: 1.0,
-							strokeWeight: 5
-							});
-							directionsService.route(
-							directionsRequest,
-							function (response, status) {
-								if (status == google.maps.DirectionsStatus.OK) {
-									new google.maps.DirectionsRenderer({
-										map: map1,
-										directions: response,
-										polylineOptions: polylineOptionsActual
-									});
-								}
-								else
-									alert("Unable To Find Root");
-								}
-							);
-						}, 5000);
+						if ( navigator.geolocation ) {
+							function success1(pos) {
+								// Location found, show map with these coordinates
+								defaultLatLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
+								drawMap1();
+							
+							}
+							function fail1(error) {
+								alert("GPS error message:\n"+error.message);
+								drawMap1();  // Failed to find location, show default map
+								
+							}
+							// Watch the users position.  
+							navigator.geolocation.watchPosition(success1, fail1, {enableHighAccuracy: true});
+						} else {
+							alert("GPS error message:\n No geolocation support");
+							drawMap1();  // No geolocation support, show default map
+						}
+						
+					function drawMap1(){						
+						var map1 = new google.maps.Map(document.getElementById("displayMap"), myOptions1);						
+						var distance = google.maps.geometry.spherical.computeDistanceBetween(defaultLatLng, loc)/1000;
+						distance = distance.toFixed(2);
+						$('#shopDistance').html(distance);
+						$('#displayDist').html("<h4>Far away(in km): "+distance+"</h4>");
+						var directionsService = new google.maps.DirectionsService();
+						var directionsRequest = {
+							origin: defaultLatLng,
+							destination: loc,
+							travelMode: google.maps.DirectionsTravelMode.DRIVING,
+							unitSystem: google.maps.UnitSystem.METRIC
+						};
+						var polylineOptionsActual = new google.maps.Polyline({
+						strokeColor: '#FF0000',
+						strokeOpacity: 1.0,
+						strokeWeight: 5
+						});
+						directionsService.route(
+						directionsRequest,
+						function (response, status) {
+							if (status == google.maps.DirectionsStatus.OK) {
+								new google.maps.DirectionsRenderer({
+									map: map1,
+									directions: response,
+									polylineOptions: polylineOptionsActual
+								});
+							}
+							else
+								alert("Unable To Find Route");
+							}
+						);						
 						google.maps.event.trigger(map1, 'resize');
-					//=================================
+					}
 					}catch(e){}
 					
 				}
@@ -541,11 +557,11 @@ function dislike(shopid){
 		});
 }
 function myFunction(){
-$('#search-cate').fadeIn();
+$('#search-cate').fadeIn("slow");
 }
 
 function myFunction2(){
-$('#search-cate').fadeOut();
+$('#search-cate').fadeOut(0);
 }
 
 function myFunction3(){
@@ -571,7 +587,7 @@ function myFunction3(){
  <!-- Login page -->
 <div data-role="page" id="SignIn">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 	</div>
 	<div data-role="navbar" data-theme="b">
 			<ul>
@@ -618,7 +634,7 @@ function myFunction3(){
  <!-- Forgot Password page -->
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
 	</div>
 	<div data-role="main" class="ui-content">
@@ -657,7 +673,7 @@ function myFunction3(){
  <!-- Register Page -->
 <div data-role="page" id="SignUp">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 	</div>
 	<div data-role="navbar">
 		<ul>
@@ -744,17 +760,17 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
     </div>
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
     </div>
 	<div class="ui-grid-solo">
-		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #29b0e2; background-color: rgba(0,0,0,0.1)">
-			<b><label for="search" style="text-align:center; font-size: 1.3em; color: #29b0e2;">DISCOVER BANGALORE CITY</label></b>
+		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #82A1C1;
+    background-color: rgba(143, 206, 226, 0.4);">
+			<b><label style="text-align:center; font-size: 1.3em; color: #29b0e2;">DISCOVER BANGALORE CITY</label></b>
 			<form class="ui-filterable">
-				<div class="ui-block-a" style="width:65%;"><input id="search1" data-type="search" placeholder="Search..." onfocus="myFunction2()"></div>
-				<div class="ui-block-b" style="width:35%;"><a href="" onclick="myFunction()" class="ui-btn ui-btn-b">Search</a></div>
+				<input id="search1" data-type="search" style="height: 43px !important;" placeholder="Search by category..." onkeypress="myFunction()" onfocus="myFunction2()">
 			</form>
 			<div style="max-height: 180px;" class="ui-content">
 				<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
@@ -783,7 +799,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel5" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="list-shop">
@@ -883,7 +899,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel4" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" id="book-shop">
@@ -991,7 +1007,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main">
@@ -1100,7 +1116,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
@@ -1139,7 +1155,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
@@ -1166,7 +1182,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel6" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
@@ -1297,7 +1313,7 @@ function myFunction3(){
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel7" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:center; font-size: 1.3em;padding-top:7px;">GAADI GALLERY</label>
+		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
 		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
     </div>
     <div role="main" style="background-color:white;">
