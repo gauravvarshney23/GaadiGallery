@@ -380,8 +380,8 @@ $(document).on('pageshow', '#shop', function(){
 						$('#wkHrsWednesday').html(shoprow.additional_information.openingHoursWednesday);
 						$('#wkHrsThursday').html(shoprow.additional_information.openingHoursThursday);
 						$('#wkHrsFriday').html(shoprow.additional_information.openingHoursFriday);
-						$('#wkHrsSaturday').html(shoprow.additional_information.openingHoursSatday);
-						$('#wkHrsSunday').html(shoprow.additional_information.openingHoursSunnday);
+						$('#wkHrsSaturday').html(shoprow.additional_information.openingHoursSaturday);
+						$('#wkHrsSunday').html(shoprow.additional_information.openingHoursSunday);
 						
 						if(shoprow.additional_information.telephone){$("#callID").attr("href", "tel:"+shoprow.additional_information.telephone);}
 						var temp = encodeURIComponent(shoprow.title + '  ' + shoprow.additional_information.map.address+ '  '+shoprow.additional_information.telephone);
