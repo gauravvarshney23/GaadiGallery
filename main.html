@@ -557,7 +557,7 @@ function dislike(shopid){
 		});
 }
 function myFunction(){
-$('#search-cate').fadeIn("slow");
+$('#search-cate').fadeIn("fast");
 }
 
 function myFunction2(){
@@ -566,8 +566,6 @@ $('#search-cate').fadeOut(0);
 
 function myFunction3(){
 	localStorage.removeItem("user_id");
-	localStorage.removeItem("shopLikeStorage");
-	localStorage.removeItem("shopDisLikeStorage");
 	$.mobile.changePage("#SignIn", { transition: "slide", changeHash: true});
 }
 </script>
@@ -770,7 +768,8 @@ function myFunction3(){
     background-color: rgba(143, 206, 226, 0.4);">
 			<b><label style="text-align:center; font-size: 1.3em; color: #29b0e2;">DISCOVER BANGALORE CITY</label></b>
 			<form class="ui-filterable">
-				<input id="search1" data-type="search" style="height: 43px !important;" placeholder="Search by category..." onkeypress="myFunction()" onfocus="myFunction2()">
+				<input id="search1" data-type="search" style="height: 43px !important;" placeholder="Search by category..." onfocus="myFunction2()">
+				<a href="" onclick="myFunction()" class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-right" style="color: #29b0e2;">Search</a>
 			</form>
 			<div style="max-height: 180px;" class="ui-content">
 				<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
