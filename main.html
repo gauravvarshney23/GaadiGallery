@@ -165,7 +165,7 @@ $(document).on('pageshow', '#map-page', function() {
 			$('#search-cate').fadeOut(0);
         }
         // Watch the users position.  
-		navigator.geolocation.watchPosition(success, fail, {enableHighAccuracy: true});
+		navigator.geolocation.watchPosition(success, fail, {enableHighAccuracy: true, timeout: 6000});
     } else {
         alert("GPS error message:\n No geolocation support");
 		drawMap(defaultLatLng);  // No geolocation support, show default map
@@ -407,7 +407,7 @@ $(document).on('pageshow', '#shop', function(){
 								
 							}
 							// Watch the users position.  
-							navigator.geolocation.watchPosition(success1, fail1, {enableHighAccuracy: true});
+							navigator.geolocation.watchPosition(success1, fail1, {enableHighAccuracy: true, timeout: 6000});
 						} else {
 							alert("GPS error message:\n No geolocation support");
 							drawMap1();  // No geolocation support, show default map
