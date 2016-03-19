@@ -10,6 +10,18 @@
 .ui-page{
 	padding: 0 !important;
 }
+
+.ui-btn-left{
+	background: transparent none repeat scroll 0 0 !important;
+    border-color: transparent !important;
+}
+.ui-btn-icon-notext::after{
+	background-color: transparent !important;
+    border-radius: 0 !important;
+    /*background-repeat: repeat-x !important;
+    height: 30px !important;*/
+}
+
 .ui-bar-b{
 	background-color: rgba(101, 193, 226, 0.7); 
 	/*margin: 2px auto; 
@@ -157,59 +169,62 @@ $(document).on('pageshow', '#map-page', function() {
             // Location found, show map with these coordinates
 			defaultLatLng = new google.maps.LatLng(pos.coords.latitude, pos.coords.longitude);
             drawMap(defaultLatLng);
-			$('#search-cate').fadeOut(0);
+			//$('#search-cate').fadeOut(0);
         }
         function fail(error) {
 			alert("GPS error message:\n"+error.message);
             drawMap(defaultLatLng);  // Failed to find location, show default map
-			$('#search-cate').fadeOut(0);
+			//$('#search-cate').fadeOut(0);
         }
         // Watch the users position.  
-		navigator.geolocation.watchPosition(success, fail, {enableHighAccuracy: true, timeout: 6000});
+		watchID = navigator.geolocation.watchPosition(success, fail, {enableHighAccuracy: true, timeout: 6000, frequency: 5000});
     } else {
         alert("GPS error message:\n No geolocation support");
 		drawMap(defaultLatLng);  // No geolocation support, show default map
     }
+	var map;
     function drawMap(latlng) {
         var myOptions = {
             zoom: 12,
             center: latlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
-        var map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
+        map = new google.maps.Map(document.getElementById("map-canvas"), myOptions);
 		var marker = new google.maps.Marker({
 						position: latlng,
 						map: map,
 						title: "I am here"
 					});
-        // Add an overlay to the map of current lat/lng
-		$('#search-cate').empty();
-		$.each(listCat.result, function(i, row) {
-			if(row.count > 0) {
-				$('#search-cate').append('<li><a href="" data-id="'+ row.name +'"><p style="font-size: 11px;font-weight: bold;">'+ row.name + '</p></a></li>');
-			}
-			$.each(row.shops, function(j, shoprow) {
-				//if(row.name == "Computer Shop")
-				try{
-					var msgDisplay = "<h4>Category: " + row.name + "</h4><h4>Shop: " + shoprow.title + "</h4>";
-					var loc1 = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
-					var marker2 = new google.maps.Marker({
-						position: loc1,
-						icon:'img/shopMark.png',
-						map: map,
-						title: msgDisplay
-					});
-					var infowindow = new google.maps.InfoWindow({
-					  content:msgDisplay
-					  });
+    
+	// Add an overlay to the map of current lat/lng
+	$('#search-cate').empty();
+	$.each(listCat.result, function(i, row) {
+		if(row.count > 0) {
+			$('#search-cate').append('<li><a href="" data-id="'+ row.name +'"><p style="font-size: 11px;font-weight: bold;">'+ row.name + '</p></a></li>');
+		}
+		$.each(row.shops, function(j, shoprow) {
+			//if(row.name == "Computer Shop")
+			try{
+				var msgDisplay = "<h4>Category: " + row.name + "</h4><h4>Shop: " + shoprow.title + "</h4>";
+				var loc1 = new google.maps.LatLng(shoprow.additional_information.map.latitude, shoprow.additional_information.map.longitude);
+				var marker2 = new google.maps.Marker({
+					position: loc1,
+					icon:'img/shopMark.png',
+					map: map,
+					title: msgDisplay
+				});
+				var infowindow = new google.maps.InfoWindow({
+				  content:msgDisplay
+				  });
 
-					google.maps.event.addListener(marker2, 'click', function() {
-					  infowindow.open(map,marker2);
-					  });
-				}catch(e){}
-			});
+				google.maps.event.addListener(marker2, 'click', function() {
+				  infowindow.open(map,marker2);
+				  });
+			}catch(e){}
 		});
-    }	
+	});
+	$('#search-cate').listview('refresh');
+	}
 });
 $(document).on('vclick', '#search-cate li a', function(){  
     listCat.name = $(this).attr('data-id');
@@ -306,6 +321,10 @@ $(document).on('pagebeforeshow', '#category-shop', function(){
 		var decoded2 = elem.value;
 		
         if(decoded1 == decoded2) {
+        	var imageStr = row.name;
+        	imageStr = imageStr.toLowerCase(); 
+        	imageStr = imageStr.split(" ").join('-');
+        	$('#shop_list_images_id').html('<img src="img/banner/'+imageStr+'.jpg">');
 			$('#Cate').append('<p style="font-size: 14px;font-weight: bold; color: #29b0e2">CATEGORY: ' +row.name+'</p>');
 			$.each(row.shops, function(j, shoprow) {
 				//console.log(shoprow);
@@ -557,7 +576,13 @@ function dislike(shopid){
 		});
 }
 function myFunction(){
-$('#search-cate').fadeIn("fast");
+if($('#search1').val() == ""){
+	console.log("no value");
+	$('#search-cate').fadeOut(0);
+}
+else{
+	$('#search-cate').fadeIn("fast");
+}
 }
 
 function myFunction2(){
@@ -633,7 +658,7 @@ function myFunction3(){
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> -->
 	</div>
 	<div data-role="main" class="ui-content">
 		<form id="forgotPassForm">
@@ -655,7 +680,6 @@ function myFunction3(){
 								var forget = JSON.parse(result);
 								if(forget.reg == 1){
 									window.location = "#SignIn";
-									$('#login_email').val(email);
 									$('#login_pass').val(forget.password);
 									alert(forget.msg);
 								}else{
@@ -757,7 +781,7 @@ function myFunction3(){
 		</ul>
 	</div>
     <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
+		<a href="#myPanel" style="padding-top: 10px; background-color: transparent !important; border-radius: 0 !important; background-repeat: repeat-x !important; height: 30px !important;" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
     </div>
     <div role="main" class="ui-content" id="map-canvas">
@@ -771,7 +795,7 @@ function myFunction3(){
 				<input id="search1" data-type="search" style="height: 43px !important;" placeholder="Search by category..." onfocus="myFunction2()">
 				<a href="" onclick="myFunction()" class="ui-btn ui-btn-b ui-icon-search ui-btn-icon-right" style="color: #29b0e2;">Search</a>
 			</form>
-			<div style="max-height: 180px;" class="ui-content">
+			<div style="max-height: 160px;" class="ui-content">
 				<ul data-role="listview" id="search-cate" data-filter="true" data-input="#search1" data-inset="false">
 				  
 				</ul>
@@ -799,7 +823,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel5" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main" id="list-shop">
 		<script>
@@ -851,12 +875,13 @@ function myFunction3(){
             <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
         </div>
         <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
-            <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/02.jpg" />
+           <div data-p="112.50" style="display: none;">
+                <img data-u="image" src="img/banner/category-list1.jpg" />
             </div>
             <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/04.jpg" />
+                <img data-u="image" src="img/banner/category-list2.jpg" />
             </div>
+            
         </div>
         <!-- Bullet Navigator -->
         <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
@@ -899,74 +924,21 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel4" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> -->
     </div>
     <div role="main" id="book-shop">
-    <script>
-        jssor_2_slider_init = function() {
-            var jssor_2_SlideshowTransitions = [
-              {$Duration:1200,$Opacity:2}
-            ];
-            var jssor_2_options = {
-              $AutoPlay: true,
-              $SlideshowOptions: {
-                $Class: $JssorSlideshowRunner$,
-                $Transitions: jssor_2_SlideshowTransitions,
-                $TransitionsOrder: 1
-              },
-              $ArrowNavigatorOptions: {
-                $Class: $JssorArrowNavigator$
-              },
-              $BulletNavigatorOptions: {
-                $Class: $JssorBulletNavigator$
-              }
-            };
-            var jssor_2_slider = new $JssorSlider$("jssor_2", jssor_2_options);
-            //responsive code begin
-            //you can remove responsive code if you don't want the slider scales while window resizing
-            function ScaleSlider() {
-                var refSize = jssor_2_slider.$Elmt.parentNode.clientWidth;
-                if (refSize) {
-                    refSize = Math.min(refSize, 600);
-                    jssor_2_slider.$ScaleWidth(refSize);
-                }
-                else {
-                    window.setTimeout(ScaleSlider, 30);
-                }
-            }
-            ScaleSlider();
-            $Jssor$.$AddEvent(window, "load", ScaleSlider);
-            $Jssor$.$AddEvent(window, "resize", ScaleSlider);
-            $Jssor$.$AddEvent(window, "orientationchange", ScaleSlider);
-            //responsive code end
-        };
-    </script>
-    <div id="jssor_2" style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden; visibility: hidden;">
+    
+    <div style="position: relative; margin: 0 auto; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
         <!-- Loading Screen -->
         <div data-u="loading" style="position: absolute; top: 0px; left: 0px;">
             <div style="filter: alpha(opacity=70); opacity: 0.7; position: absolute; display: block; top: 0px; left: 0px; width: 100%; height: 100%;"></div>
             <div style="position:absolute;display:block;background:url('img/loading.gif') no-repeat center center;top:0px;left:0px;width:100%;height:100%;"></div>
         </div>
-        <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
-            <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/05.jpg" />
-            </div>
-            <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/03.jpg" />
-            </div>
+        <div id="shop_list_images_id" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
+           <img src="img/banner/default.jpg">
         </div>
-        <!-- Bullet Navigator -->
-        <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
-            <!-- bullet navigator item prototype -->
-            <div data-u="prototype" style="width:16px;height:16px;"></div>
-        </div>
-        <!-- Arrow Navigator -->
-        <span data-u="arrowleft" class="jssora12l" style="top:0px;left:0px;width:30px;height:46px;" data-autocenter="2"></span>
-        <span data-u="arrowright" class="jssora12r" style="top:0px;right:0px;width:30px;height:46px;" data-autocenter="2"></span>
     </div>
-    <script>
-        jssor_2_slider_init();
-    </script>
+    
 		<div>
 			<a href="#AdvancedFilter" id="af" data-rel="popup" class="ui-btn ui-icon-bullets ui-btn-icon-left" data-position-to="#af">Advanced filter</a>
 		</div>
@@ -1007,7 +979,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main">
 		<div style="position: relative;">
@@ -1116,7 +1088,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
 		<h3>Offer Zone</h3>
@@ -1155,7 +1127,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
 		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
@@ -1182,7 +1154,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel6" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
 		<div id="fbuilder_2">
@@ -1313,7 +1285,7 @@ function myFunction3(){
     <div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel7" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
     </div>
     <div role="main" style="background-color:white;">
 	<script>
@@ -1363,11 +1335,12 @@ function myFunction3(){
         </div>
         <div data-u="slides" style="cursor: default; position: relative; top: 0px; left: 0px; width: 600px; height: 300px; overflow: hidden;">
             <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/05.jpg" />
+                <img data-u="image" src="img/banner/category-list1.jpg" />
             </div>
             <div data-p="112.50" style="display: none;">
-                <img data-u="image" src="img/03.jpg" />
+                <img data-u="image" src="img/banner/category-list2.jpg" />
             </div>
+            
         </div>
         <!-- Bullet Navigator -->
         <div data-u="navigator" class="jssorb05" style="bottom:16px;right:16px;" data-autocenter="1">
