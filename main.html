@@ -11,23 +11,33 @@
 	padding: 0 !important;
 }
 
-.ui-btn-left{
+/*.ui-btn-left{
 	background: transparent none repeat scroll 0 0 !important;
     border-color: transparent !important;
 }
 .ui-btn-icon-notext::after{
 	background-color: transparent !important;
     border-radius: 0 !important;
-    /*background-repeat: repeat-x !important;
-    height: 30px !important;*/
+    background-repeat: repeat-x !important;
+    height: 30px !important;
+}*/
+.headerDiv{
+	position: fixed;
+	width: 100%; 
+	height: auto; 
+	top: 0%; 
+	padding-top: 5px; 
+	padding-left: 5px; 
+	background-color: rgba(101, 193, 226, 0.7);
+	border-bottom: 3px solid #82A1C1;
 }
-
 .ui-bar-b{
-	background-color: rgba(101, 193, 226, 0.7); 
+	background-color: rgba(101, 193, 226, 0.7);
 	/*margin: 2px auto; 
-	width: 98%; */
+	width: 98%;*/ 
+	height: auto;
 	border-bottom: 3px solid #82A1C1; 
-	/*border-radius: 25px; */
+	/*border-radius: 25px;*/
 	text-align: center;
 }
 
@@ -610,7 +620,7 @@ function myFunction3(){
  <!-- Login page -->
 <div data-role="page" id="SignIn">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
+		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
 	</div>
 	<div data-role="navbar" data-theme="b">
 			<ul>
@@ -657,7 +667,7 @@ function myFunction3(){
  <!-- Forgot Password page -->
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
+		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
 		<!--<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> -->
 	</div>
 	<div data-role="main" class="ui-content">
@@ -695,7 +705,7 @@ function myFunction3(){
  <!-- Register Page -->
 <div data-role="page" id="SignUp">
 	<div data-role="header" data-theme="b">
-		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
+		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
 	</div>
 	<div data-role="navbar">
 		<ul>
@@ -780,12 +790,12 @@ function myFunction3(){
 			
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
-		<a href="#myPanel" style="padding-top: 10px; background-color: transparent !important; border-radius: 0 !important; background-repeat: repeat-x !important; height: 30px !important;" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
-		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-    </div>
     <div role="main" class="ui-content" id="map-canvas">
 		<!-- map loads here... -->
+    </div>
+	<div class="headerDiv">
+		<a href="#myPanel" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+		<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
     </div>
 	<div class="ui-grid-solo">
 		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #82A1C1;
@@ -820,12 +830,18 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel5" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
-    <div role="main" id="list-shop">
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel5" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
+    <div role="main">
 		<script>
         jssor_1_slider_init = function() {
             var jssor_1_SlideshowTransitions = [
@@ -921,12 +937,18 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel4" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px;  padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> -->
-    </div>
-    <div role="main" id="book-shop">
+		<a href="#list-category" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> 
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel4" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>	
+    <div role="main">
         <div id="shop_list_images_id" style="position: relative;">
            <img style="width: 100%; height: auto;" src="img/banner/default.jpg">
         </div>
@@ -969,11 +991,17 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel3" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
+		<a href="#category-shop" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel3" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
     <div role="main">
 		<div style="position: relative;">
 		  <div id="shopImage">
@@ -1073,16 +1101,22 @@ function myFunction3(){
 			<li><a href="#list-category">Category</a></li>
 			<li><a href="#ServicePage">Services</a></li>
 			<li><a href="#MagazinePage">Magazine</a></li>
-			<li style="color: #29b0e2"><a href="#">Offer Zone</a></li>
+			<li style="color: #29b0e2">Offer Zone</li>
 			<li><a href="#ContactUs">Contact Us</a></li>
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel1" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel1" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
 		<h3>Offer Zone</h3>
 		<!--<img src="img/Preloader.gif" id="OfferLoader" style="margin:20px auto;display:block;"></img>-->
@@ -1117,11 +1151,17 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel2" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel2" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
 		<img src="img/Preloader.gif" id="ContactLoader" style="margin:20px auto;display:block;"></img>
 		<h3 id="contact"></h3>
@@ -1144,11 +1184,17 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel6" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel6" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
 		<div id="fbuilder_2">
       <div id="formheader_2"><div class="fform" id="field"><h3>Gaadi Gallery Services</h3><span></span></div></div>
@@ -1275,11 +1321,17 @@ function myFunction3(){
 			<li><a href="" onclick="myFunction3()">Sign out</a></li>
 		</ul>
 	</div>
-    <div data-role="header" data-theme="b" data-position="fixed">
+<!--<div data-role="header" data-theme="b" data-position="fixed">
 		<a href="#myPanel7" class="ui-btn ui-btn-inline ui-corner-all ui-icon-bars ui-btn-icon-notext" data-transition="slide">Home</a>
 		<label style="text-align:left; font-size: 1.3em;padding-top:7px; padding-left: 45px !important;"><img src="GaadiGallery.png" style="height: 40px !important; width: 40px !important; margin-bottom: -7px !important;"/></label>
-		<!--<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>-->
-    </div>
+		<a href="#map-page" class="ui-btn ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a>
+    </div>-->
+	<div data-role="header" data-position="fixed">
+		<div class="headerDiv">
+			<a href="#myPanel7" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		</div>
+	</div>
     <div role="main" style="background-color:white;">
 	<script>
         jssor_3_slider_init = function() {
