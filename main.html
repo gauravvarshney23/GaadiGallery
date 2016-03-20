@@ -182,7 +182,14 @@ $(document).on('pageshow', '#map-page', function() {
 			//$('#search-cate').fadeOut(0);
         }
         function fail(error) {
-			alert("GPS error message:\n"+error.message);
+			if(error.code == 1)
+				alert("GPS error message: "+error.message+"\nPlease allow for GPS tracking");
+			if(error.code == 2)
+				alert("GPS error message: "+error.message+"\nLocation information is unavailable");
+			if(error.code == 3)
+				alert("GPS error message: "+error.message+"\nPlease activate your GPS for location tracking");
+			else
+				alert("GPS error message: "+error.message+"\nAn unknown error occurred");
             drawMap(defaultLatLng);  // Failed to find location, show default map
 			//$('#search-cate').fadeOut(0);
         }
@@ -610,7 +617,7 @@ function myFunction3(){
 <div data-role="page" id="firstPage" data-url="firstPage" style="background-image: url('img/background.png');">
     <div role="main" id="firstPageBody">
 	  <div style="position: relative; margin:0 auto;display: block;top: 150px;">
-		<img src="GaadiGallery.png" id="logo" style="margin:0 auto; height:130px; width:130px; display:block;"></img>
+		<img src="GaadiGallery.png" id="logo" style="margin:0 auto; display:block;"></img>
 		<div style="text-align:center; color: #29b0e2; margin:5px auto;display:block;"><h3>Gaadi Gallery</h3><h4>DISCOVER BANGALORE CITY</h4></div>
 		<img src="img/55.gif" style="margin:0px auto;display:block;"></img>
 	  </div>	
@@ -620,7 +627,7 @@ function myFunction3(){
  <!-- Login page -->
 <div data-role="page" id="SignIn">
 	<div data-role="header" data-theme="b">
-		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
+		<img src="GaadiGallery.png" style="padding-top:5px;"/>
 	</div>
 	<div data-role="navbar" data-theme="b">
 			<ul>
@@ -667,7 +674,7 @@ function myFunction3(){
  <!-- Forgot Password page -->
 <div data-role="page" id="ForgotPassword">
 	<div data-role="header" data-theme="b">
-		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
+		<img src="GaadiGallery.png" style="padding-top:5px;"/>
 		<!--<a href="#" data-rel="back" class="ui-btn ui-btn-right ui-btn-inline ui-corner-all ui-icon-back ui-btn-icon-notext" data-transition="slide" data-direction="reverse">Back</a> -->
 	</div>
 	<div data-role="main" class="ui-content">
@@ -705,7 +712,7 @@ function myFunction3(){
  <!-- Register Page -->
 <div data-role="page" id="SignUp">
 	<div data-role="header" data-theme="b">
-		<img src="GaadiGallery.png" style="padding-top:5px; height: 40px; width: 40px;"/>
+		<img src="GaadiGallery.png" style="padding-top:5px;"/>
 	</div>
 	<div data-role="navbar">
 		<ul>
@@ -795,7 +802,7 @@ function myFunction3(){
     </div>
 	<div class="headerDiv">
 		<a href="#myPanel" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-		<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+		<img src="GaadiGallery.png" style="padding-left: 5px;" />
     </div>
 	<div class="ui-grid-solo">
 		<div class="ui-block-a" style="position: fixed; height: auto; top: 30%; padding: 5px; border: 3px solid #82A1C1;
@@ -837,8 +844,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel5" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel5" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;" />
 		</div>
 	</div>
     <div role="main">
@@ -944,8 +951,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel4" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel4" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;"/>
 		</div>
 	</div>	
     <div role="main">
@@ -998,8 +1005,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel3" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel3" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;" />
 		</div>
 	</div>
     <div role="main">
@@ -1113,8 +1120,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel1" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel1" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;" />
 		</div>
 	</div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
@@ -1158,8 +1165,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel2" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel2" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;"/>
 		</div>
 	</div>
     <div role="main" style="background-color:white;" class="ui-content" id="contact-us">
@@ -1191,8 +1198,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel6" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel6" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;"/>
 		</div>
 	</div>
     <div role="main" style="background-color:white;top: 20px;position: relative;" class="ui-content">
@@ -1328,8 +1335,8 @@ function myFunction3(){
     </div>-->
 	<div data-role="header" data-position="fixed">
 		<div class="headerDiv">
-			<a href="#myPanel7" data-transition="slide"><img style="height: 40px; width: 40px;" src="img/menu-icon.png"/></a>
-			<img src="GaadiGallery.png" style="padding-left: 5px; height: 40px; width: 40px;"/>
+			<a href="#myPanel7" data-transition="slide"><img style="width: 35px;" src="img/menu-icon.png"/></a>
+			<img src="GaadiGallery.png" style="padding-left: 5px;"/>
 		</div>
 	</div>
     <div role="main" style="background-color:white;">
